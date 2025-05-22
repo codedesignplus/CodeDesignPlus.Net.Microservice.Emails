@@ -1,0 +1,10 @@
+{
+  "microservice": "Smtp",
+  "description": "Custom Microservice",
+  "version": "1.0.0",
+  "organization": "CodeDesignPlus",
+  "aggregate": "Emails",
+  "vault": "security-codedesignplus",
+  "contactName": "Wilzon Liscano",
+  "contactEmail": "wliscano@codedesignplus.com"
+}
