@@ -16,7 +16,7 @@ public class FindByIdQueryHandler(ITemplateRepository repository, IMapper mapper
 
         var role = await repository.FindAsync<TemplateAggregate>(request.Id, cancellationToken);
 
-        ApplicationGuard.IsNull(role, Errors.TeemplateNotFound);
+        ApplicationGuard.IsNull(role, Errors.TemplateNotFound);
 
         await cacheManager.SetAsync(request.Id.ToString(), mapper.Map<TemplateDto>(role));
 

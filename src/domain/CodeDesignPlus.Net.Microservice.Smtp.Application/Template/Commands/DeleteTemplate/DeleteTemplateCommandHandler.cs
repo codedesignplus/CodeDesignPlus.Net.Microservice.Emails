@@ -8,7 +8,7 @@ public class DeleteTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         var aggregate = await repository.FindAsync<TemplateAggregate>(request.Id, cancellationToken);
 
-        ApplicationGuard.IsNull(aggregate, Errors.TeemplateNotFound);
+        ApplicationGuard.IsNull(aggregate, Errors.TemplateNotFound);
 
         aggregate.Delete(user.IdUser);
 

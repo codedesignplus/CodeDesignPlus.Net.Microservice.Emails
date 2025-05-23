@@ -21,4 +21,6 @@ public class Errors: IErrorCodes
     public const string VariablesTemplateIsInvalid = "114 : The variables template is invalid";
     public const string AttachmentsTemplateIsInvalid = "115 : The attachments template is invalid";
 
+    public const string FromTemplateIsInvalid = "116 : The from template is invalid";
+    public const string AliasTemplateIsInvalid = "117 : The alias template is invalid"; 
 }

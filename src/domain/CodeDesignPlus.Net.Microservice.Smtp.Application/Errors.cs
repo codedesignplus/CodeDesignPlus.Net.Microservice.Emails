@@ -7,5 +7,5 @@ public class Errors: IErrorCodes
     public const string InvalidRequest = "201 : Invalid Request";
     public const string EmailsAlreadyWasSent = "202 : Emails already was sent"; 
     public const string TemplateAlreadyExists = "203 : Template already exists"; 
-    public const string TeemplateNotFound = "204 : Template not found"; 
+    public const string TemplateNotFound = "204 : Template not found"; 
 }

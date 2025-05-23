@@ -5,11 +5,14 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
     public string Name { get; private set; } = null!;
     public string Subject { get; private set; } = null!;
     public string Body { get; private set; } = null!;
+    public string From { get; private set; } = null!;
+    public string Alias { get; private set; } = null!;
+    public bool IsHtml { get; private set; }
     public List<string> Variables { get; private set; } = [];
     public List<string> Attachments { get; private set; } = [];
     public Guid? Tenant { get; private set; } = null!;
 
-    public TemplateAggregate(Guid id, string name, string subject, string body, List<string> variables, List<string> attachments, Guid? tenant, Guid createdBy) : this(id)
+    public TemplateAggregate(Guid id, string name, string subject, string body, List<string> variables, List<string> attachments, string from, string alias, bool isHtml, Guid? tenant, Guid createdBy) : this(id)
     {
         DomainGuard.GuidIsEmpty(id, Errors.IdTemplateIsInvalid);
         DomainGuard.IsNullOrEmpty(name, Errors.NameTemplateIsInvalid);
@@ -17,6 +20,9 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         DomainGuard.IsNullOrEmpty(body, Errors.BodyTemplateIsInvalid);
         DomainGuard.IsEmpty(variables, Errors.VariablesTemplateIsInvalid);
         DomainGuard.IsEmpty(attachments, Errors.AttachmentsTemplateIsInvalid);
+        DomainGuard.IsNullOrEmpty(from, Errors.FromTemplateIsInvalid);
+        DomainGuard.IsNullOrEmpty(alias, Errors.AliasTemplateIsInvalid);
+
 
         Name = name;
         Subject = subject;
@@ -24,6 +30,9 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         Variables = variables;
         Attachments = attachments;
         Tenant = tenant;
+        From = from;
+        Alias = alias;
+        IsHtml = isHtml;
 
         CreatedAt = SystemClock.Instance.GetCurrentInstant();
         CreatedBy = createdBy;
@@ -31,24 +40,29 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         this.AddEvent(TemplateCreatedDomainEvent.Create(Id, Name, Subject, Body, Variables, Attachments, Tenant));
     }
 
-    public static TemplateAggregate Create(Guid id, string name, string subject, string body, List<string> variables, List<string> attachments, Guid? tenant, Guid createdBy)
+    public static TemplateAggregate Create(Guid id, string name, string subject, string body, List<string> variables, List<string> attachments, string from, string alias, bool isHtml, Guid? tenant, Guid createdBy)
     {
-        return new TemplateAggregate(id, name, subject, body, variables, attachments, tenant, createdBy);
+        return new TemplateAggregate(id, name, subject, body, variables, attachments, from, alias, isHtml, tenant, createdBy);
     }
 
-    public void Update(string name, string subject, string body, List<string> variables, List<string> attachments, Guid updatedBy)
+    public void Update(string name, string subject, string body, List<string> variables, List<string> attachments, string from, string alias, bool isHtml, Guid updatedBy)
     {
         DomainGuard.IsNullOrEmpty(name, Errors.NameTemplateIsInvalid);
         DomainGuard.IsNullOrEmpty(subject, Errors.SubjectTemplateIsInvalid);
         DomainGuard.IsNullOrEmpty(body, Errors.BodyTemplateIsInvalid);
         DomainGuard.IsEmpty(variables, Errors.VariablesTemplateIsInvalid);
         DomainGuard.IsEmpty(attachments, Errors.AttachmentsTemplateIsInvalid);
+        DomainGuard.IsNullOrEmpty(from, Errors.FromTemplateIsInvalid);
+        DomainGuard.IsNullOrEmpty(alias, Errors.AliasTemplateIsInvalid);
 
         Name = name;
         Subject = subject;
         Body = body;
         Variables = variables;
         Attachments = attachments;
+        From = from;
+        Alias = alias;
+        IsHtml = isHtml;
 
         UpdatedAt = SystemClock.Instance.GetCurrentInstant();
         UpdatedBy = updatedBy;
@@ -63,6 +77,6 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
 
         this.AddEvent(TemplateDeletedDomainEvent.Create(Id, Name, Subject, Body, Variables, Attachments, Tenant));
     }
-    
+
 
 }

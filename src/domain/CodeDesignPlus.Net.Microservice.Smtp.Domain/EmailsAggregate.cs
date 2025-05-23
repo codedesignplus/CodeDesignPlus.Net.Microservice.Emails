@@ -11,10 +11,10 @@ public class EmailsAggregate(Guid id) : AggregateRootBase(id)
     public List<string> Attachments { get; private set; } = [];
     public bool IsHtml { get; private set; }
     public Dictionary<string, string> Values { get; private set; } = [];
-    public string Status { get; private set; } = null!;
-    public string Server { get; private set; } = null!;
+    public string Code { get; private set; } = null!;
+    public string Error { get; private set; } = null!;
 
-    public EmailsAggregate(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<string> attachments, bool isHtml, Dictionary<string, string> values, string status, string server) : this(id)
+    public EmailsAggregate(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<string> attachments, bool isHtml, Dictionary<string, string> values, string code, string error) : this(id)
     {
         DomainGuard.GuidIsEmpty(id, Errors.IdEmailIsInvalid);
         DomainGuard.IsEmpty(to, Errors.ToEmailIsInvalid);
@@ -24,7 +24,6 @@ public class EmailsAggregate(Guid id) : AggregateRootBase(id)
         DomainGuard.IsNullOrEmpty(body, Errors.BodyEmailIsInvalid);
         DomainGuard.IsEmpty(from, Errors.FromEmailIsInvalid);
         DomainGuard.IsEmpty(attachments, Errors.AttachmentsEmailIsInvalid);
-        DomainGuard.IsNullOrEmpty(server, Errors.ServerEmailIsInvalid);
 
         To = to;
         Cc = cc;
@@ -35,16 +34,16 @@ public class EmailsAggregate(Guid id) : AggregateRootBase(id)
         Attachments = attachments;
         IsHtml = isHtml;
         Values = values;
-        Status = status;
-        Server = server;
+        Code = code;
+        Error = error;
 
         CreatedAt = SystemClock.Instance.GetCurrentInstant();
 
-        this.AddEvent(EmailSentDomainEvent.Create(Id, To, Cc, Bcc, Subject, Body, From, Attachments, IsHtml, Values, Status, Server));
+        this.AddEvent(EmailSentDomainEvent.Create(Id, To, Cc, Bcc, Subject, Body, From, Attachments, IsHtml, Values, Code, Error));
     }
 
-    public static EmailsAggregate Create(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<string> attachments, bool isHtml, Dictionary<string, string> values, string status, string server)
+    public static EmailsAggregate Create(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<string> attachments, bool isHtml, Dictionary<string, string> values, string? code, string? error)
     {
-        return new EmailsAggregate(id, to, cc, bcc, subject, body, from, attachments, isHtml, values, status, server);
+        return new EmailsAggregate(id, to, cc, bcc, subject, body, from, attachments, isHtml, values, code, error);
     }
 }
