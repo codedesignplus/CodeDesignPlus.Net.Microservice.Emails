@@ -1,3 +1,6 @@
+using System.Buffers.Text;
+using System.Text;
+
 namespace CodeDesignPlus.Net.Microservice.Smtp.Domain;
 
 public class TemplateAggregate(Guid id) : AggregateRootBase(id)
@@ -19,17 +22,15 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         DomainGuard.IsNullOrEmpty(subject, Errors.SubjectTemplateIsInvalid);
         DomainGuard.IsNullOrEmpty(body, Errors.BodyTemplateIsInvalid);
         DomainGuard.IsEmpty(variables, Errors.VariablesTemplateIsInvalid);
-        DomainGuard.IsEmpty(attachments, Errors.AttachmentsTemplateIsInvalid);
         DomainGuard.IsNullOrEmpty(from, Errors.FromTemplateIsInvalid);
         DomainGuard.IsNullOrEmpty(alias, Errors.AliasTemplateIsInvalid);
 
-
         Name = name;
         Subject = subject;
-        Body = body;
+        Body = Base64.IsValid(body) ? body : Convert.ToBase64String(Encoding.UTF8.GetBytes(body));
         Variables = variables;
         Attachments = attachments;
-        Tenant = tenant;
+        Tenant = tenant == Guid.Empty ? null : tenant;
         From = from;
         Alias = alias;
         IsHtml = isHtml;
@@ -57,7 +58,7 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
 
         Name = name;
         Subject = subject;
-        Body = body;
+        Body =  Base64.IsValid(body) ? body : Convert.ToBase64String(Encoding.UTF8.GetBytes(body));
         Variables = variables;
         Attachments = attachments;
         From = from;

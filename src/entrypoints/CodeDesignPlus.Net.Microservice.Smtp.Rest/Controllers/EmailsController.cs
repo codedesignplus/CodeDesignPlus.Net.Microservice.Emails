@@ -1,8 +1,55 @@
+using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.SendEmail;
+
 namespace CodeDesignPlus.Net.Microservice.Smtp.Rest.Controllers;
 
+/// <summary>
+/// Controller for managing the Emails.
+/// </summary>
+/// <param name="mediator">Mediator instance for sending commands and queries.</param>
+/// <param name="mapper">Mapper instance for mapping between DTOs and commands/queries.</param>
 [Route("api/[controller]")]
 [ApiController]
-public class EmailsController(IMediator mediator, IMapper mapper) : ControllerBase
+public class EmailController(IMediator mediator, IMapper mapper) : ControllerBase
 {
-    
+    /// <summary>
+    /// Get all Emails.
+    /// </summary>
+    /// <param name="criteria">Criteria for filtering and sorting the Emails.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Collection of Emails.</returns>
+    // [HttpGet]
+    // public async Task<IActionResult> GetEmails([FromQuery] C.Criteria criteria, CancellationToken cancellationToken)
+    // {
+    //     var result = await mediator.Send(new GetAllQuery(criteria), cancellationToken);
+
+    //     return Ok(result);
+    // }
+
+    // /// <summary>
+    // /// Get a Email by its ID.
+    // /// </summary>
+    // /// <param name="id">The unique identifier of the Email.</param>
+    // /// <param name="cancellationToken">Cancellation token.</param>
+    // /// <returns>The Email.</returns>
+    // [HttpGet("{id}")]
+    // public async Task<IActionResult> GetEmailById(Guid id, CancellationToken cancellationToken)
+    // {
+    //     var result = await mediator.Send(new FindByIdQuery(id), cancellationToken);
+
+    //     return Ok(result);
+    // }
+
+    /// <summary>
+    /// Create a new Email.
+    /// </summary>
+    /// <param name="data">Data for creating the Email.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>HTTP status code 204 (No Content).</returns>
+    [HttpPost]
+    public async Task<IActionResult> SendEmail([FromBody] SendEmailDto data, CancellationToken cancellationToken)
+    {
+        await mediator.Send(mapper.Map<SendEmailCommand>(data), cancellationToken);
+
+        return NoContent();
+    }
 }

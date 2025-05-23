@@ -8,7 +8,7 @@ public class CreateTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         ApplicationGuard.IsTrue(exist, Errors.TemplateAlreadyExists);
 
-        var aggregate = TemplateAggregate.Create(request.Id, request.Name, request.Subject, request.Body, request.Variables, request.Attachments, user.Tenant, user.IdUser);
+        var aggregate = TemplateAggregate.Create(request.Id, request.Name, request.Subject, request.Body, request.Variables, request.Attachments, request.From, request.Alias, request.IsHtml, user.Tenant, user.IdUser);
 
         await repository.CreateAsync(aggregate, cancellationToken);
 

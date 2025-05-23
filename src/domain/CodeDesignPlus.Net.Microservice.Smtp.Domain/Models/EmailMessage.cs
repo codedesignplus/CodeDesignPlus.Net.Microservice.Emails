@@ -40,7 +40,7 @@ public class EmailMessage
     /// <summary>
     /// Gets or sets a value indicating whether the email message is in HTML format.
     /// </summary>
-    public bool IsHtm { get; private set; } = true;
+    public bool IsHtml { get; private set; } = true;
 
     /// <summary>
     /// Creates a new instance of the <see cref="EmailMessage"/> class.
@@ -67,7 +67,7 @@ public class EmailMessage
             From = from,
             Alias = alias,
             Attachments = attachments,
-            IsHtm = isHtm
+            IsHtml = isHtm
         };
     }
 }

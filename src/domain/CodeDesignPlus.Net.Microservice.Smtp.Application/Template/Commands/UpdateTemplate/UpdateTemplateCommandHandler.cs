@@ -10,7 +10,7 @@ public class UpdateTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         ApplicationGuard.IsNull(aggregate, Errors.TemplateNotFound);
 
-        aggregate.Update(request.Name, request.Subject, request.Body, request.Variables, request.Attachments, user.Tenant);
+        aggregate.Update(request.Name, request.Subject, request.Body, request.Variables, request.Attachments, request.From, request.Alias, request.IsHtml, user.Tenant);
 
         await repository.UpdateAsync(aggregate, cancellationToken);
 

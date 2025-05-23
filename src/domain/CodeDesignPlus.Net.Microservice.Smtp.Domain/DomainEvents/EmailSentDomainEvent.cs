@@ -12,8 +12,9 @@ public class EmailSentDomainEvent(
      List<string> attachments,
      bool isHtml,
      Dictionary<string, string> values,
-     string status,
-     string server,
+     string? code,
+     string? error,
+     Guid? tenant,
      Guid? eventId = null,
      Instant? occurredAt = null,
      Dictionary<string, object>? metadata = null
@@ -28,11 +29,12 @@ public class EmailSentDomainEvent(
     public List<string> Attachments { get; private set; } = attachments;
     public bool IsHtml { get; private set; } = isHtml;
     public Dictionary<string, string> Values { get; private set; } = values;
-    public string Status { get; private set; } = status;
-    public string Server { get; private set; } = server;
+    public string? Code { get; private set; } = code;
+    public string? Error { get; private set; } = error;
+    public Guid? Tenant { get; private set; } = tenant;
 
-    public static EmailSentDomainEvent Create(Guid aggregateId, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<string> attachments, bool isHtml, Dictionary<string, string> values, string status, string server)
+    public static EmailSentDomainEvent Create(Guid aggregateId, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<string> attachments, bool isHtml, Dictionary<string, string> values, string? code, string? error, Guid? tenant)
     {
-        return new EmailSentDomainEvent(aggregateId, to, cc, bcc, subject, body, from, attachments, isHtml, values, status, server);
+        return new EmailSentDomainEvent(aggregateId, to, cc, bcc, subject, body, from, attachments, isHtml, values, code, error, tenant);
     }
 }

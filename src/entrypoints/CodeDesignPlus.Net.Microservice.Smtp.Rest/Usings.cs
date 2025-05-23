@@ -13,16 +13,5 @@ global using C = CodeDesignPlus.Net.Core.Abstractions.Models.Criteria;
 global using CodeDesignPlus.Net.Serializers;
 global using NodaTime;
 
-
-
-
-
-
-
-
-
-global using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.CreateEmails;
-global using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.UpdateEmails;
-global using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.DeleteEmails;
 global using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Queries.GetEmailsById;
 global using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Queries.GetAllEmails;

@@ -135,9 +135,10 @@ vault write auth/approle/login role_id=$role_id secret_id=$secret_id
 Write-Host $newlines
 Write-Host "6. Writing secrets..." -ForegroundColor Blue
 vault kv put -mount=security-codedesignplus-keyvalue ms-smtp `
-    Security:ClientId=a74cb192-598c-4757-95ae-b315793bbbca `
-    Security:ValidAudiences:0=a74cb192-598c-4757-95ae-b315793bbbca `
-    Security:ValidAudiences:1=api://a74cb192-598c-4757-95ae-b315793bbbca
+    "Security:Authority=https://codedesignplusdevelopment.b2clogin.com/codedesignplusdevelopment.onmicrosoft.com/B2C_1A_SIGNUP_SIGNIN/oauth2/v2.0/token" `
+    "Security:ValidIssuer=https://codedesignplusdevelopment.b2clogin.com/fb23d3e8-7de7-4554-9d73-78e9904a243f/v2.0/" `
+    "Security:ClientId=ae5bd492-a9a8-4462-9153-a71f960ed269" `
+    "Security:ValidAudiences:0=ae5bd492-a9a8-4462-9153-a71f960ed269" `
 
 vault kv get -mount=security-codedesignplus-keyvalue ms-smtp
 

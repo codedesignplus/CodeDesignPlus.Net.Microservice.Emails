@@ -1,3 +1,4 @@
+using System.Text;
 using CodeDesignPlus.Net.Microservice.MicrosoftGraph.Infrastructure.Services.GraphClient;
 using CodeDesignPlus.Net.Microservice.Smtp.Domain.Models;
 using CodeDesignPlus.Net.Microservice.Smtp.Domain.Services;
@@ -11,18 +12,20 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
 {
     public async Task<EmailResponse> SendEmail(EmailMessage emailMessage, CancellationToken cancellationToken)
     {
+        var body = Encoding.UTF8.GetString(Convert.FromBase64String(emailMessage.Body));
+
         var message = new Message()
         {
             Subject = emailMessage.Subject,
             Body = new ItemBody
             {
-                ContentType = emailMessage.IsHtm ? BodyType.Html : BodyType.Text,
-                Content = emailMessage.Body
+                ContentType = emailMessage.IsHtml ? BodyType.Html : BodyType.Text,
+                Content =  Encoding.UTF8.GetString(Convert.FromBase64String(emailMessage.Body))
             },
             ToRecipients = BuildRecipients(emailMessage.To),
-            CcRecipients = BuildRecipients(emailMessage.Cc),
-            BccRecipients = BuildRecipients(emailMessage.Bcc),
-            Attachments = BuildAttachments(emailMessage.Attachments)
+            //CcRecipients = BuildRecipients(emailMessage.Cc),
+            //BccRecipients = BuildRecipients(emailMessage.Bcc),
+            //Attachments = BuildAttachments(emailMessage.Attachments)
         };
 
         if (!string.IsNullOrEmpty(emailMessage.From))
@@ -88,11 +91,13 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
         if (values == null || values.Count == 0)
             return template;
 
+        var templateDecode = Encoding.UTF8.GetString(Convert.FromBase64String(template));
+
         foreach (var kvp in values)
         {
-            template = template.Replace($"{{{{{kvp.Key}}}}}", kvp.Value);
+            templateDecode = templateDecode.Replace($"{{{{{kvp.Key}}}}}", kvp.Value);
         }
 
-        return template;
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(templateDecode));
     }
 }

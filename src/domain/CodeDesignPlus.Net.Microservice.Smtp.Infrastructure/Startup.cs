@@ -1,4 +1,5 @@
-﻿using CodeDesignPlus.Net.Microservice.Smtp.Domain.Services;
+﻿using CodeDesignPlus.Net.Microservice.MicrosoftGraph.Infrastructure.Services.GraphClient;
+using CodeDesignPlus.Net.Microservice.Smtp.Domain.Services;
 using CodeDesignPlus.Net.Microservice.Smtp.Infrastructure.Options;
 using CodeDesignPlus.Net.Microservice.Smtp.Infrastructure.Services.EmailSender;
 
@@ -15,6 +16,7 @@ namespace CodeDesignPlus.Net.Microservice.Smtp.Infrastructure
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
+            services.AddScoped<IGraphClient, GraphClient>();
             services.AddScoped<IEmailSender, EmailSender>();
         }
     }
