@@ -4,6 +4,8 @@ using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.SendEmail
 using CodeDesignPlus.Net.Microservice.Smtp.Application.Template.Commands.CreateTemplate;
 using CodeDesignPlus.Net.Microservice.Smtp.Application.Template.Commands.UpdateTemplate;
 using CodeDesignPlus.Net.Microservice.Smtp.Application.Template.DataTransferObjects;
+using CodeDesignPlus.Net.Microservice.Smtp.Domain.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace CodeDesignPlus.Net.Microservice.Smtp.Application.Setup;
 
@@ -17,17 +19,8 @@ public static class MapsterConfigEmails
 
         TypeAdapterConfig<TemplateAggregate, TemplateDto>.NewConfig();
 
-        TypeAdapterConfig<SendEmailDto, SendEmailCommand>.NewConfig()
-        .ConstructUsing(src => new SendEmailCommand(
-            src.Id,
-            src.IdTemplate,
-            src.To,
-            src.Cc,
-            src.Bcc,
-            src.Subject,
-            src.Attachments,
-            src.Values
-        ));
         TypeAdapterConfig<EmailAddressAttribute, EmailsDto>.NewConfig();
     }
+
+
 }

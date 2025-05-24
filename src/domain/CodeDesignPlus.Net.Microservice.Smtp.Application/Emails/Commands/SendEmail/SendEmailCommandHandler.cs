@@ -24,7 +24,7 @@ public class SendEmailCommandHandler(IEmailsRepository repository, IPubSub pubsu
         var from = template.From;
         var alias = template.Alias;
         var isHtml = template.IsHtml;
-        var attachments = ConvertToAttachments(request.Attachments);
+        var attachments = request.Attachments;
 
         var message = EmailMessage.Create(request.Subject, body, request.To, request.Cc, request.Bcc, from, alias, attachments, isHtml);
 
@@ -37,19 +37,4 @@ public class SendEmailCommandHandler(IEmailsRepository repository, IPubSub pubsu
         await pubsub.PublishAsync(aggregate.GetAndClearEvents(), cancellationToken);
     }
 
-    private static List<Attachment> ConvertToAttachments(List<IFormFile> attachments)
-    {
-        var result = new List<Attachment>();
-
-        foreach (var attachment in attachments)
-        {
-            using var stream = new MemoryStream();
-            attachment.CopyTo(stream);
-            var fileBytes = stream.ToArray();
-
-            result.Add(Attachment.Create(attachment.FileName, attachment.ContentType, fileBytes));
-        }
-
-        return result;
-    }
 }

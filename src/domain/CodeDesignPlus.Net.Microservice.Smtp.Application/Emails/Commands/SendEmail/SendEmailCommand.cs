@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Http;
+using CodeDesignPlus.Net.Microservice.Smtp.Domain.Models;
 
 namespace CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.SendEmail;
 
-[DtoGenerator]
-public record SendEmailCommand(Guid Id, Guid IdTemplate, List<string> To, List<string> Cc, List<string> Bcc, string Subject, List<IFormFile> Attachments, Dictionary<string, string> Values) : IRequest;
+public record SendEmailCommand(Guid Id, Guid IdTemplate, List<string> To, List<string> Cc, List<string> Bcc, string Subject, List<Attachment> Attachments, Dictionary<string, string> Values) : IRequest;
 
 public class Validator : AbstractValidator<SendEmailCommand>
 {

@@ -1,4 +1,6 @@
 using CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.SendEmail;
+using CodeDesignPlus.Net.Microservice.Smtp.Domain.Models;
+using CodeDesignPlus.Net.Microservice.Smtp.Rest.DataTransferObjects;
 
 namespace CodeDesignPlus.Net.Microservice.Smtp.Rest.Controllers;
 
@@ -49,8 +51,36 @@ public class EmailController(IMediator mediator, IMapper mapper) : ControllerBas
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> SendEmail([FromForm] SendEmailDto data, CancellationToken cancellationToken)
     {
-        await mediator.Send(mapper.Map<SendEmailCommand>(data), cancellationToken);
+        var command = new SendEmailCommand(
+            data.Id,
+            data.IdTemplate,
+            data.To,
+            data.Cc,
+            data.Bcc,
+            data.Subject,
+            ConvertToAttachments(data.Attachments),
+            data.Values
+        );
+
+        await mediator.Send(command, cancellationToken);
 
         return NoContent();
+    }
+    
+
+    private static List<Attachment> ConvertToAttachments(List<IFormFile> attachments)
+    {
+        var result = new List<Attachment>();
+
+        foreach (var attachment in attachments)
+        {
+            using var stream = new MemoryStream();
+            attachment.CopyTo(stream);
+            var fileBytes = stream.ToArray();
+
+            result.Add(Attachment.Create(attachment.FileName, attachment.ContentType, fileBytes));
+        }
+
+        return result;
     }
 }
