@@ -46,7 +46,8 @@ public class EmailController(IMediator mediator, IMapper mapper) : ControllerBas
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>HTTP status code 204 (No Content).</returns>
     [HttpPost]
-    public async Task<IActionResult> SendEmail([FromBody] SendEmailDto data, CancellationToken cancellationToken)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> SendEmail([FromForm] SendEmailDto data, CancellationToken cancellationToken)
     {
         await mediator.Send(mapper.Map<SendEmailCommand>(data), cancellationToken);
 

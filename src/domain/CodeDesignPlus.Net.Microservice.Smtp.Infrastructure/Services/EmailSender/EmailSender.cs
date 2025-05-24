@@ -23,9 +23,9 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
                 Content =  Encoding.UTF8.GetString(Convert.FromBase64String(emailMessage.Body))
             },
             ToRecipients = BuildRecipients(emailMessage.To),
-            //CcRecipients = BuildRecipients(emailMessage.Cc),
-            //BccRecipients = BuildRecipients(emailMessage.Bcc),
-            //Attachments = BuildAttachments(emailMessage.Attachments)
+            CcRecipients = BuildRecipients(emailMessage.Cc),
+            BccRecipients = BuildRecipients(emailMessage.Bcc),
+            Attachments = BuildAttachments(emailMessage.Attachments)
         };
 
         if (!string.IsNullOrEmpty(emailMessage.From))
@@ -62,7 +62,7 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
     private static List<Recipient>? BuildRecipients(List<string>? emails)
     {
         if (emails == null || emails.Count == 0)
-            return null;
+            return [];
 
         return [.. emails.Select(email => new Recipient
         {
@@ -70,17 +70,18 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
         })];
     }
 
-    private static List<Attachment>? BuildAttachments(List<string>? attachments)
+    private static List<Microsoft.Graph.Models.Attachment>? BuildAttachments(List<Domain.Models.Attachment>? attachments)
     {
         if (attachments == null || attachments.Count == 0)
             return null;
 
         return [.. attachments.Select(attachment => new FileAttachment
         {
-            Name = attachment,
+            Name = attachment.Name,
             ContentType = "application/octet-stream",
-            ContentBytes = Convert.FromBase64String(Convert.ToBase64String(File.ReadAllBytes(attachment)))
-        }).Cast<Attachment>()];
+            ContentBytes = attachment.Content,
+            Size = attachment.Content.Length
+        }).Cast<Microsoft.Graph.Models.Attachment>()];
     }
 
     public string BuildBody(string template, Dictionary<string, string> values)

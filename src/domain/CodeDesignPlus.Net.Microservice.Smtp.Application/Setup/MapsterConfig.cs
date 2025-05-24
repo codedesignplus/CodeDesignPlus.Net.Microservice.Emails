@@ -15,9 +15,19 @@ public static class MapsterConfigEmails
         TypeAdapterConfig<UpdateTemplateDto, UpdateTemplateCommand>.NewConfig();
         TypeAdapterConfig<TemplateAggregate, TemplateDto>.NewConfig();
 
-        TypeAdapterConfig<TemplateAggregate, TemplateDto>.NewConfig();        
-        
-        TypeAdapterConfig<SendEmailDto, SendEmailCommand>.NewConfig();
+        TypeAdapterConfig<TemplateAggregate, TemplateDto>.NewConfig();
+
+        TypeAdapterConfig<SendEmailDto, SendEmailCommand>.NewConfig()
+        .ConstructUsing(src => new SendEmailCommand(
+            src.Id,
+            src.IdTemplate,
+            src.To,
+            src.Cc,
+            src.Bcc,
+            src.Subject,
+            src.Attachments,
+            src.Values
+        ));
         TypeAdapterConfig<EmailAddressAttribute, EmailsDto>.NewConfig();
     }
 }

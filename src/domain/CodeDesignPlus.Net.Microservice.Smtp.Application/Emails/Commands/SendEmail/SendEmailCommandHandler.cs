@@ -1,5 +1,6 @@
 using CodeDesignPlus.Net.Microservice.Smtp.Domain.Models;
 using CodeDesignPlus.Net.Microservice.Smtp.Domain.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace CodeDesignPlus.Net.Microservice.Smtp.Application.Emails.Commands.SendEmail;
 
@@ -23,15 +24,32 @@ public class SendEmailCommandHandler(IEmailsRepository repository, IPubSub pubsu
         var from = template.From;
         var alias = template.Alias;
         var isHtml = template.IsHtml;
+        var attachments = ConvertToAttachments(request.Attachments);
 
-        var message = EmailMessage.Create(request.Subject, body, request.To, request.Cc, request.Bcc, from, alias, request.Attachments, isHtml);
+        var message = EmailMessage.Create(request.Subject, body, request.To, request.Cc, request.Bcc, from, alias, attachments, isHtml);
 
         var response = await emailSender.SendEmail(message, cancellationToken);
 
-        var aggregate = EmailsAggregate.Create(request.Id, request.To, request.Cc, request.Bcc, request.Subject, body, from, request.Attachments, isHtml, request.Values, response.StatusCode, response.Error, user.Tenant);
+        var aggregate = EmailsAggregate.Create(request.Id, request.To, request.Cc, request.Bcc, request.Subject, body, from, [], isHtml, request.Values, response.StatusCode, response.Error, user.Tenant);
 
         await repository.CreateAsync(aggregate, cancellationToken);
 
         await pubsub.PublishAsync(aggregate.GetAndClearEvents(), cancellationToken);
+    }
+
+    private static List<Attachment> ConvertToAttachments(List<IFormFile> attachments)
+    {
+        var result = new List<Attachment>();
+
+        foreach (var attachment in attachments)
+        {
+            using var stream = new MemoryStream();
+            attachment.CopyTo(stream);
+            var fileBytes = stream.ToArray();
+
+            result.Add(Attachment.Create(attachment.FileName, attachment.ContentType, fileBytes));
+        }
+
+        return result;
     }
 }

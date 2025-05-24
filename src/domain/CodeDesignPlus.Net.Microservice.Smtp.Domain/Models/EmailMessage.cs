@@ -36,7 +36,7 @@ public class EmailMessage
     /// <summary>
     /// Gets or sets the list of attachments for the email message.
     /// </summary>
-    public List<string> Attachments { get; private set; } = [];
+    public List<Attachment> Attachments { get; private set; } = [];
     /// <summary>
     /// Gets or sets a value indicating whether the email message is in HTML format.
     /// </summary>
@@ -55,7 +55,7 @@ public class EmailMessage
     /// <param name="attachments">The list of attachments for the email message.</param>
     /// <param name="isHtm">A value indicating whether the email message is in HTML format.</param>
     /// <returns>A new instance of the <see cref="EmailMessage"/> class.</returns>
-    public static EmailMessage Create(string subject, string body, List<string> to, List<string> cc, List<string> bcc, string from, string alias, List<string> attachments, bool isHtm)
+    public static EmailMessage Create(string subject, string body, List<string> to, List<string> cc, List<string> bcc, string from, string alias, List<Attachment> attachments, bool isHtm)
     {
         return new EmailMessage
         {
