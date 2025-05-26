@@ -109,30 +109,30 @@ vault write auth/approle/login role_id=$role_id secret_id=$secret_id
 # Write secrets, db config, rabbitmq config
 echo "$newlines"
 echo "${BLUE}6. Writing secrets...${NC}"
-vault kv put -mount=security-codedesignplus-keyvalue ms-smtp \
+vault kv put -mount=security-codedesignplus-keyvalue ms-emails \
     Security:ClientId=a74cb192-598c-4757-95ae-b315793bbbca \
     Security:ValidAudiences:0=a74cb192-598c-4757-95ae-b315793bbbca \
     Security:ValidAudiences:1=api://a74cb192-598c-4757-95ae-b315793bbbca
     
-vault kv get -mount=security-codedesignplus-keyvalue ms-smtp
+vault kv get -mount=security-codedesignplus-keyvalue ms-emails
 
 # Write database configuration
 echo "$newlines"
 echo "${BLUE}7. Writing database configuration...${NC}"
-vault write security-codedesignplus-database/config/db-ms-smtp \
+vault write security-codedesignplus-database/config/db-ms-emails \
     plugin_name=mongodb-database-plugin \
-    allowed_roles="ms-smtp-mongo-role" \
+    allowed_roles="ms-emails-mongo-role" \
     connection_url="mongodb://{{username}}:{{password}}@mongo:27017/admin?ssl=false" \
     username="admin" \
     password="password"
 
-vault write security-codedesignplus-database/roles/ms-smtp-mongo-role \
-    db_name=db-ms-smtp \
-    creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite", "db": "db-ms-smtp" }] }' \
+vault write security-codedesignplus-database/roles/ms-emails-mongo-role \
+    db_name=db-ms-emails \
+    creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite", "db": "db-ms-emails" }] }' \
     default_ttl="1h" \
     max_ttl="24h"
 
-vault read security-codedesignplus-database/creds/ms-smtp-mongo-role
+vault read security-codedesignplus-database/creds/ms-emails-mongo-role
 
 # Write rabbitmq configuration
 echo "$newlines"
@@ -145,7 +145,7 @@ vault write security-codedesignplus-rabbitmq/config/connection \
     username="admin" \
     password="password"
 
-vault write security-codedesignplus-rabbitmq/roles/ms-smtp-rabbitmq-role \
+vault write security-codedesignplus-rabbitmq/roles/ms-emails-rabbitmq-role \
     vhosts='{"/":{"write": ".*", "read": ".*", "configure": ".*"}}'
 
-vault read security-codedesignplus-rabbitmq/creds/ms-smtp-rabbitmq-role
+vault read security-codedesignplus-rabbitmq/creds/ms-emails-rabbitmq-role

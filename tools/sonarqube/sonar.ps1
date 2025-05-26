@@ -5,8 +5,8 @@
 Write-Host "Start Sonarscanner -------------------------------------------------------------------------------------------------------------------------------"
 
 $org = "codedesignplus"
-$key = "CodeDesignPlus.Net.Microservice.Smtp"
-$csproj = "CodeDesignPlus.Net.Microservice.Smtp.sln"
+$key = "CodeDesignPlus.Net.Microservice.Emails"
+$csproj = "CodeDesignPlus.Net.Microservice.Emails.sln"
 $report = "tests/**/coverage.opencover.xml"
 $server = "http://localhost:9000"
 $token = "sqa_12f3d20d51de2b4c9639db0035d1c68dc4f2fff1"

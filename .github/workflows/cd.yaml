@@ -22,8 +22,8 @@ jobs:
   version:
     uses: codedesignplus/workflows/.github/workflows/release.yaml@main
     with:
-      project-name: CodeDesignPlus.Net.Microservice.Smtp
-      microservice-name: ms-smtp
+      project-name: CodeDesignPlus.Net.Microservice.Emails
+      microservice-name: ms-emails
       environment: ${{ github.event.inputs.environment }}
     secrets: inherit
 
@@ -32,8 +32,8 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/dev' }}
     uses: codedesignplus/workflows/.github/workflows/container-image.yaml@main
     with:
-      project-name: CodeDesignPlus.Net.Microservice.Smtp
-      microservice-name: ms-smtp
+      project-name: CodeDesignPlus.Net.Microservice.Emails
+      microservice-name: ms-emails
       environment: ${{ github.event.inputs.environment }}
     secrets: inherit
   
@@ -42,8 +42,8 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/dev' }}
     uses: codedesignplus/workflows/.github/workflows/deploy-self-host.yaml@main
     with:
-      project-name: CodeDesignPlus.Net.Microservice.Smtp
-      microservice-name: ms-smtp
+      project-name: CodeDesignPlus.Net.Microservice.Emails
+      microservice-name: ms-emails
       enable-rest: true
       enable-grpc: true
       enable-worker: true

@@ -75,17 +75,17 @@ dotnet build
    
    - For REST API:
       ```bash
-      dotnet run --project src/entrypoints/CodeDesignPlus.Net.Microservice.Smtp.Rest
+      dotnet run --project src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.Rest
       ```
 
    - For gRPC:
       ```bash
-      dotnet run --project src/entrypoints/CodeDesignPlus.Net.Microservice.Smtp.gRpc
+      dotnet run --project src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc
       ```
 
    - For Worker:
       ```bash
-      dotnet run --project src/entrypoints/CodeDesignPlus.Net.Microservice.Smtp.AsyncWorker
+      dotnet run --project src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.AsyncWorker
       ```
 
 ## 🧪 Testing
@@ -133,23 +133,23 @@ To build and run the application using Docker, follow these steps:
 
 1. Build the Docker image using the Dockerfile in the REST API entry point:
    ```bash
-   docker build -t ms-smtp-rest . -f src/entrypoints/CodeDesignPlus.Net.Microservice.Smtp.Rest/Dockerfile
+   docker build -t ms-emails-rest . -f src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.Rest/Dockerfile
 
-   docker run -d -p 5000:5000 --network=backend -e ASPNETCORE_ENVIRONMENT=Docker --name ms-smtp-rest ms-smtp-rest
+   docker run -d -p 5000:5000 --network=backend -e ASPNETCORE_ENVIRONMENT=Docker --name ms-emails-rest ms-emails-rest
    ```
 
 2. Build the Docker image using the Dockerfile in the gRPC entry point:
    ```bash
-   docker build -t ms-smtp-grpc . -f src/entrypoints/CodeDesignPlus.Net.Microservice.Smtp.gRpc/Dockerfile
+   docker build -t ms-emails-grpc . -f src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc/Dockerfile
 
-   docker run -d -p 5001:5001 --network=backend -e ASPNETCORE_ENVIRONMENT=Docker --name ms-smtp-grpc ms-smtp-grpc
+   docker run -d -p 5001:5001 --network=backend -e ASPNETCORE_ENVIRONMENT=Docker --name ms-emails-grpc ms-emails-grpc
    ```
 
 3. Build the Docker image using the Dockerfile in the Worker entry point:
    ```bash
-   docker build -t ms-smtp-worker . -f src/entrypoints/CodeDesignPlus.Net.Microservice.Smtp.AsyncWorker/Dockerfile
+   docker build -t ms-emails-worker . -f src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.AsyncWorker/Dockerfile
 
-   docker run -d -p 5002:5002 --network=backend -e ASPNETCORE_ENVIRONMENT=Docker --name ms-smtp-worker ms-smtp-worker
+   docker run -d -p 5002:5002 --network=backend -e ASPNETCORE_ENVIRONMENT=Docker --name ms-emails-worker ms-emails-worker
    ```
 
 ## 📚 Documentation
