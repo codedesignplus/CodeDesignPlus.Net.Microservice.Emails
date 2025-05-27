@@ -21,7 +21,7 @@ public class SendMailPasswordTempCommandHandler(IUserRepository repository, IMed
 
         var isValidContext = options.Value.Transit.SecretContexts.TryGetValue(KEY_SECRET_CONTEXT, out var secretContext);
 
-        DomainGuard.IsTrue(isValidContext, Errors.SecretContextNotFound);
+        DomainGuard.IsFalse(isValidContext, Errors.SecretContextNotFound);
 
         var password = await vaultTransit.DecryptAsync(request.PasswordKey, request.PasswordCipher, secretContext);
 
