@@ -32,7 +32,7 @@ public class UserController(IMediator mediator, IMapper mapper) : ControllerBase
     /// <param name="data">Data for updating the User Template.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>HTTP status code 204 (No Content).</returns>
-    [HttpPost]
+    [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateConfigUserTemplateDto data, CancellationToken cancellationToken)
     {
         await mediator.Send(mapper.Map<UpdateConfigUserTemplateCommand>(data), cancellationToken);
