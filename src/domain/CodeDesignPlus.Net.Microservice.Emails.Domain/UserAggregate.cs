@@ -23,12 +23,9 @@ public class UserAggregate(Guid id) : AggregateRootBase(id)
         CreatedAt = SystemClock.Instance.GetCurrentInstant();
     }
 
-    public static UserAggregate Create(Guid id, TypeTemplate typeTemplate, string subject, string uriLoginApp)
+    public static UserAggregate Create(Guid id, Guid idTemplate, TypeTemplate typeTemplate, string subject, string uriLoginApp)
     {
-        DomainGuard.GuidIsEmpty(id, Errors.IdEmailIsInvalid);
-        DomainGuard.IsTrue(typeTemplate == TypeTemplate.None, Errors.TypeTemplateIsInvalid);
-
-        return new UserAggregate(id, Guid.Empty, typeTemplate, subject, uriLoginApp);
+        return new UserAggregate(id, idTemplate, typeTemplate, subject, uriLoginApp);
     }
 
     public void UpdateTemplate(Guid idTemplate, TypeTemplate typeTemplate, string subject, string uriLoginApp)

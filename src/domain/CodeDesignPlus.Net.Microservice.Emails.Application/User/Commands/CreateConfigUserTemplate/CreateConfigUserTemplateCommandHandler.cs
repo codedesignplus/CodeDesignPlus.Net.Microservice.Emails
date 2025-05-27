@@ -14,7 +14,7 @@ public class CreateConfigUserTemplateCommandHandler(IUserRepository repository, 
 
         ApplicationGuard.IsFalse(templateExist, Errors.TemplateNotFound);
 
-        var aggregate = UserAggregate.Create(request.Id, request.TypeTemplate, request.Subject, request.UriLoginApp);
+        var aggregate = UserAggregate.Create(request.Id, request.IdTemplate, request.TypeTemplate, request.Subject, request.UriLoginApp);
 
         await repository.CreateAsync(aggregate, cancellationToken);
     }
