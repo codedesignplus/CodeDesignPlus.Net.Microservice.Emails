@@ -73,7 +73,7 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
     private static List<Microsoft.Graph.Models.Attachment>? BuildAttachments(List<Domain.Models.Attachment>? attachments)
     {
         if (attachments == null || attachments.Count == 0)
-            return null;
+            return [];
 
         return [.. attachments.Select(attachment => new FileAttachment
         {
