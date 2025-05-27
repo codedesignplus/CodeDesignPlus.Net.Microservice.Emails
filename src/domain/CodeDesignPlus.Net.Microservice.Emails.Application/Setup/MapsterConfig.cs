@@ -4,6 +4,9 @@ using CodeDesignPlus.Net.Microservice.Emails.Application.Emails.Commands.SendEma
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.CreateTemplate;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.UpdateTemplate;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.DataTransferObjects;
+using CodeDesignPlus.Net.Microservice.Emails.Application.User.Commands.CreateConfigUserTemplate;
+using CodeDesignPlus.Net.Microservice.Emails.Application.User.Commands.SendMailPasswordTemp;
+using CodeDesignPlus.Net.Microservice.Emails.Application.User.Commands.UpdateConfigUserTemplate;
 using CodeDesignPlus.Net.Microservice.Emails.Domain.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -20,6 +23,10 @@ public static class MapsterConfigEmails
         TypeAdapterConfig<TemplateAggregate, TemplateDto>.NewConfig();
 
         TypeAdapterConfig<EmailAddressAttribute, EmailsDto>.NewConfig();
+
+
+        TypeAdapterConfig<CreateConfigUserTemplateDto, CreateConfigUserTemplateCommand>.NewConfig();
+        TypeAdapterConfig<UpdateConfigUserTemplateDto, UpdateConfigUserTemplateCommand>.NewConfig();
     }
 
 

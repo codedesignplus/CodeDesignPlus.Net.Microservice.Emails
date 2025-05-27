@@ -12,4 +12,7 @@ public class Errors: IErrorCodes
     public const string SecretContextNotFound = "206 : Secret context is not valid or not found in Vault options.";
 
     public const string EmailNotFound = "207 : Email not found";
+
+    public const string UserConfigTemplateAlreadyExists = "208 : User config template already exists";
+    public const string UserConfigTemplateNotFound = "209 : User config template not found";
 }
