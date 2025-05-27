@@ -1,7 +1,9 @@
 using CodeDesignPlus.Net.Logger.Extensions;
 using CodeDesignPlus.Net.Microservice.Commons.FluentValidation;
+using CodeDesignPlus.Net.Microservice.Commons.HealthChecks;
 using CodeDesignPlus.Net.Microservice.Commons.MediatR;
 using CodeDesignPlus.Net.Mongo.Extensions;
+using CodeDesignPlus.Net.Observability.Extensions;
 using CodeDesignPlus.Net.RabbitMQ.Extensions;
 using CodeDesignPlus.Net.Redis.Cache.Extensions;
 using CodeDesignPlus.Net.Redis.Extensions;
@@ -26,6 +28,8 @@ builder.Services.AddCache(builder.Configuration);
 builder.Services.AddMapster();
 builder.Services.AddFluentValidation();
 builder.Services.AddMediatR<CodeDesignPlus.Net.Microservice.Emails.Application.Startup>();
+builder.Services.AddObservability(builder.Configuration, builder.Environment);
+builder.Services.AddHealthChecksServices();
 
 var app = builder.Build();
 
