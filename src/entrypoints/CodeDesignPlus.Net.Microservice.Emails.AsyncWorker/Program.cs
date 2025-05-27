@@ -33,6 +33,8 @@ builder.Services.AddHealthChecksServices();
 
 var app = builder.Build();
 
+app.UseHealthChecks();
+
 var home = app.MapGroup("/");
 
 home.MapGet("/", () => "Ready");
