@@ -5,7 +5,7 @@ using MediatR;
 namespace CodeDesignPlus.Net.Microservice.Emails.AsyncWorker.Consumers;
 
 [QueueName("User", "sendmailpasswordtemp")]
-public class UserCreatedDomainEventHandler(IMediator mediator) : IEventHandler<UserCreatedDomainEvent>
+public class SendMailPasswordTempHandler(IMediator mediator) : IEventHandler<UserCreatedDomainEvent>
 {
     public Task HandleAsync(UserCreatedDomainEvent data, CancellationToken token)
     {
