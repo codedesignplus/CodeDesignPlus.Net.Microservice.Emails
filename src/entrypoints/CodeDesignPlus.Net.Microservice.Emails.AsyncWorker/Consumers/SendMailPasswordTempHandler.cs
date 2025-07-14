@@ -9,6 +9,9 @@ public class SendMailPasswordTempHandler(IMediator mediator) : IEventHandler<Use
 {
     public Task HandleAsync(UserCreatedDomainEvent data, CancellationToken token)
     {
+        if(data.WasCreatedFromSSO)
+            return Task.CompletedTask;
+        
         var command = new SendMailPasswordTempCommand(
             data.AggregateId,
             data.FirstName,
@@ -16,8 +19,8 @@ public class SendMailPasswordTempHandler(IMediator mediator) : IEventHandler<Use
             data.DisplayName,
             data.Email,
             data.Phone,
-            data.PasswordKey,
-            data.PasswordCipher,
+            data.PasswordKey!,
+            data.PasswordCipher!,
             data.IsActive
         );
 
