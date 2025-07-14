@@ -71,10 +71,12 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         this.AddEvent(TemplateUpdatedDomainEvent.Create(Id, Name, Subject, Body, Variables, Attachments, Tenant));
     }
 
-    public void Delete(Guid updatedBy)
+    public void Delete(Guid deletedBy)
     {
-        UpdatedAt = SystemClock.Instance.GetCurrentInstant();
-        UpdatedBy = updatedBy;
+        this.IsDeleted = true;
+        this.IsActive = false;
+        this.DeletedAt = SystemClock.Instance.GetCurrentInstant();
+        this.DeletedBy = deletedBy;
 
         this.AddEvent(TemplateDeletedDomainEvent.Create(Id, Name, Subject, Body, Variables, Attachments, Tenant));
     }
