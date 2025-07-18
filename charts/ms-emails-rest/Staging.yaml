@@ -110,6 +110,6 @@ ms-base:
         uri: /
       route:
       - destination:
-          host: ms-emails-rest.urbancore.svc.cluster.local
+          host: ms-emails-rest.codedesignplus.svc.cluster.local
           port:
             number: 5000
