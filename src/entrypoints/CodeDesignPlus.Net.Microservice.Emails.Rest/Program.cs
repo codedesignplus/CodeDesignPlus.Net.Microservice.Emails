@@ -8,6 +8,7 @@ using CodeDesignPlus.Net.Redis.Cache.Extensions;
 using CodeDesignPlus.Net.Vault.Extensions;
 using NodaTime.Serialization.SystemTextJson;
 using NodaTime.Serialization.JsonNet;
+using CodeDesignPlus.Net.gRpc.Clients.Extensions;
 
 
 
@@ -43,6 +44,7 @@ builder.Services.AddCoreSwagger<Program>(builder.Configuration);
 builder.Services.AddCache(builder.Configuration);
 builder.Services.AddResources<Program>(builder.Configuration);
 builder.Services.AddHealthChecksServices();
+builder.Services.AddGrpcClients(builder.Configuration);
 
 var app = builder.Build();
 

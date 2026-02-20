@@ -1,6 +1,6 @@
 namespace CodeDesignPlus.Net.Microservice.Emails.Domain.DomainEvents;
 
-[EventKey<TemplateAggregate>(1, "TemplateCreatedDomainEvent")]
+[EventKey<TemplateAggregate>(1, "TemplateCreatedDomainEvent", autoCreate: false)]
 public class TemplateCreatedDomainEvent(
      Guid aggregateId,
      Guid? eventId = null,

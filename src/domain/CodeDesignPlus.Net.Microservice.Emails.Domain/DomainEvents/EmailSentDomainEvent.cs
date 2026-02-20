@@ -1,6 +1,6 @@
 namespace CodeDesignPlus.Net.Microservice.Emails.Domain.DomainEvents;
 
-[EventKey<EmailsAggregate>(1, "EmailSentDomainEvent")]
+[EventKey<EmailsAggregate>(1, "EmailSentDomainEvent", autoCreate: false)]
 public class EmailSentDomainEvent(
      Guid aggregateId,
      List<string> to,
