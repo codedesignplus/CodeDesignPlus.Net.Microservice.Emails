@@ -1,6 +1,6 @@
 namespace CodeDesignPlus.Net.Microservice.Emails.AsyncWorker.DomainEvents;
 
-[EventKey<UserAggregate>(1, "UserCreatedDomainEvent", "ms-microsoftgraph")]
+[EventKey("UserAggregate", 1, "UserCreatedDomainEvent", "ms-microsoftgraph")]
 public class UserCreatedDomainEvent(
     Guid aggregateId,
     string firstName,
