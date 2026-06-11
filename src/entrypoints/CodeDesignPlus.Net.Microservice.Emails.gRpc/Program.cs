@@ -1,3 +1,4 @@
+using CodeDesignPlus.Net.Observability.Interceptors;
 using CodeDesignPlus.Net.gRpc.Clients.Extensions;
 using CodeDesignPlus.Net.Logger.Extensions;
 using CodeDesignPlus.Net.Microservice.Commons.EntryPoints.gRpc.Interceptors;
@@ -24,6 +25,7 @@ builder.Configuration.AddVault();
 builder.Services.AddGrpc(options =>
 {
     options.Interceptors.Add<ErrorInterceptor>();
+    options.Interceptors.Add<TraceContextInterceptor>();
 });
 builder.Services.AddGrpcReflection();
 
@@ -48,7 +50,7 @@ app.UseHealthChecks();
 
 app.UseAuth();
 
-app.MapGrpcService<EmailsService>().RequireAuthorization();
+app.MapGrpcService<EmailsService>();//.RequireAuthorization();
 
 if (app.Environment.IsDevelopment())
 {

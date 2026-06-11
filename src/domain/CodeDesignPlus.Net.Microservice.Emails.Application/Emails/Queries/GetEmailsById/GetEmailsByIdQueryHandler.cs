@@ -11,11 +11,11 @@ public class GetEmailsByIdQueryHandler(IEmailsRepository repository, IMapper map
         if (exists)
             return await cacheManager.GetAsync<EmailsDto>(request.Id.ToString());
 
-        var tenant = await repository.FindAsync<UserAggregate>(request.Id, cancellationToken);
+        var email = await repository.FindAsync<EmailsAggregate>(request.Id, cancellationToken);
 
-        ApplicationGuard.IsNull(tenant, Errors.EmailNotFound);
+        ApplicationGuard.IsNull(email, Errors.EmailNotFound);
 
-        var dto = mapper.Map<EmailsDto>(tenant);
+        var dto = mapper.Map<EmailsDto>(email);
 
         await cacheManager.SetAsync(request.Id.ToString(), dto);
 

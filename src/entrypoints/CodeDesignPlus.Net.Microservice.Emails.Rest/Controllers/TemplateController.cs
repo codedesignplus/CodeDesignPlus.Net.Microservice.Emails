@@ -1,8 +1,10 @@
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.CreateTemplate;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.DeleteTemplate;
+using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.GenerateHtmlWithAI;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.UpdateTemplate;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.FindById;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.GetAll;
+using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.GetSystemTemplates;
 
 namespace CodeDesignPlus.Net.Microservice.Emails.Rest.Controllers;
 
@@ -25,6 +27,19 @@ public class TemplateController(IMediator mediator, IMapper mapper) : Controller
     public async Task<IActionResult> GetTemplates([FromQuery] C.Criteria criteria, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetAllQuery(criteria), cancellationToken);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get all system templates (Tenant=null).
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Collection of system templates.</returns>
+    [HttpGet("system")]
+    public async Task<IActionResult> GetSystemTemplates(CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new GetSystemTemplatesQuery(), cancellationToken);
 
         return Ok(result);
     }
@@ -86,5 +101,19 @@ public class TemplateController(IMediator mediator, IMapper mapper) : Controller
         await mediator.Send(new DeleteTemplateCommand(id), cancellationToken);
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Generate or modify template HTML using AI.
+    /// </summary>
+    /// <param name="data">The AI generation request with prompt and current HTML.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The generated HTML and status message.</returns>
+    [HttpPost("ai/generate")]
+    public async Task<IActionResult> GenerateHtmlWithAI([FromBody] GenerateHtmlWithAIDto data, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(mapper.Map<GenerateHtmlWithAICommand>(data), cancellationToken);
+
+        return Ok(result);
     }
 }

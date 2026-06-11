@@ -3,14 +3,16 @@ using CodeDesignPlus.Net.Microservice.Emails.Application.Template.DataTransferOb
 
 namespace CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.GetAll;
 
-public class GetAllQueryHandler(ITemplateRepository repository, IMapper mapper) : IRequestHandler<GetAllQuery, Pagination<TemplateDto>>
+public class GetAllQueryHandler(ITemplateRepository repository, IMapper mapper, IUserContext userContext) : IRequestHandler<GetAllQuery, Pagination<TemplateDto>>
 {
     public async Task<Pagination<TemplateDto>> Handle(GetAllQuery request, CancellationToken cancellationToken)
     {
         ApplicationGuard.IsNull(request, Errors.InvalidRequest);
 
-        var templates = await repository.MatchingAsync<TemplateAggregate>(request.Criteria, cancellationToken);
+        var templates = await repository.GetByTenantAsync(userContext.Tenant, cancellationToken);
 
-        return mapper.Map<Pagination<TemplateDto>>(templates);
+        var mapped = mapper.Map<List<TemplateDto>>(templates);
+
+        return Pagination<TemplateDto>.Create(mapped, mapped.Count, 0, mapped.Count);
     }
 }

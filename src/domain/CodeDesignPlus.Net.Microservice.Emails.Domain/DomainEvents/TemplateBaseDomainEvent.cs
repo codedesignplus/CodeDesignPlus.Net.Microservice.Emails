@@ -1,3 +1,5 @@
+using CodeDesignPlus.Net.Microservice.Emails.Domain.ValueObjects;
+
 namespace CodeDesignPlus.Net.Microservice.Emails.Domain.DomainEvents;
 
 public abstract class TemplateBaseDomainEvent(
@@ -11,6 +13,6 @@ public abstract class TemplateBaseDomainEvent(
     public string Subject { get; protected set; } = null!;
     public string Body { get; protected set; } = null!;
     public List<string> Variables { get; protected set; } = [];
-    public List<string> Attachments { get; protected set; } = [];
+    public List<FileAttachment> Attachments { get; protected set; } = [];
     public Guid? Tenant { get; protected set; }
 }

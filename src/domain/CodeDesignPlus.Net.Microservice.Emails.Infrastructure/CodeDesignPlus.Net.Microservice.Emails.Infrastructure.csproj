@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,6 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.14.2" />
+    <PackageReference Include="CodeDesignPlus.Net.File.Storage" Version="1.0.12" />
     <PackageReference Include="Microsoft.Graph" Version="5.87.0" />
+    <PackageReference Include="PuppeteerSharp" Version="21.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Seeds\**\*.json" />
   </ItemGroup>
 </Project>

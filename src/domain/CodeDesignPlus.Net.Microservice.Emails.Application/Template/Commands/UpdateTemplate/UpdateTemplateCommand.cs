@@ -1,7 +1,9 @@
+using CodeDesignPlus.Net.Microservice.Emails.Application.Template.DataTransferObjects;
+
 namespace CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.UpdateTemplate;
 
 [DtoGenerator]
-public record UpdateTemplateCommand(Guid Id, string Name, string Subject, string Body, List<string> Variables, List<string> Attachments, string From, string Alias, bool IsHtml) : IRequest;
+public record UpdateTemplateCommand(Guid Id, string Name, string Subject, string Body, List<string> Variables, List<FileAttachmentDto> Attachments, string From, string Alias, bool IsHtml) : IRequest;
 
 public class Validator : AbstractValidator<UpdateTemplateCommand>
 {
@@ -13,6 +15,5 @@ public class Validator : AbstractValidator<UpdateTemplateCommand>
         RuleFor(x => x.Body).NotEmpty().NotNull();
         RuleFor(x => x.From).NotEmpty().NotNull();
         RuleFor(x => x.Alias).NotEmpty().NotNull();
-        
     }
 }

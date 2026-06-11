@@ -1,3 +1,5 @@
+using CodeDesignPlus.Net.Microservice.Emails.Domain.ValueObjects;
+
 namespace CodeDesignPlus.Net.Microservice.Emails.Domain.DomainEvents;
 
 [EventKey<TemplateAggregate>(1, "TemplateUpdatedDomainEvent")]
@@ -8,7 +10,7 @@ public class TemplateUpdatedDomainEvent(
      Dictionary<string, object>? metadata = null
 ) : TemplateBaseDomainEvent(aggregateId, eventId, occurredAt, metadata)
 {
-     public static TemplateUpdatedDomainEvent Create(Guid aggregateId, string name, string subject, string body, List<string> variables, List<string> attachments, Guid? tenant)
+     public static TemplateUpdatedDomainEvent Create(Guid aggregateId, string name, string subject, string body, List<string> variables, List<FileAttachment> attachments, Guid? tenant)
     {
         return new TemplateUpdatedDomainEvent(aggregateId)
         {

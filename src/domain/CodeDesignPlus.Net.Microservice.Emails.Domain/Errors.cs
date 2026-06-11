@@ -29,4 +29,8 @@ public class Errors: IErrorCodes
     public const string SubjectIsInvalid = "119 : The subject is invalid";
 
     public const string UriLoginAppIsInvalid = "120 : The URI of the login application is invalid";
+
+    public const string FileAttachmentIdIsInvalid = "121 : The file attachment id is invalid";
+    public const string FileAttachmentNameIsInvalid = "122 : The file attachment name is invalid";
+    public const string FileAttachmentTargetIsInvalid = "123 : The file attachment target is invalid";
 }

@@ -1,3 +1,5 @@
+using CodeDesignPlus.Net.Microservice.Emails.Domain.ValueObjects;
+
 namespace CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.UpdateTemplate;
 
 public class UpdateTemplateCommandHandler(ITemplateRepository repository, IUserContext user, IPubSub pubsub) : IRequestHandler<UpdateTemplateCommand>
@@ -10,7 +12,9 @@ public class UpdateTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         ApplicationGuard.IsNull(aggregate, Errors.TemplateNotFound);
 
-        aggregate.Update(request.Name, request.Subject, request.Body, request.Variables, request.Attachments, request.From, request.Alias, request.IsHtml, user.Tenant);
+        var attachments = request.Attachments?.Select(a => new FileAttachment(a.Id, a.Name, a.Target)).ToList() ?? [];
+
+        aggregate.Update(request.Name, request.Subject, request.Body, request.Variables, attachments, request.From, request.Alias, request.IsHtml, user.IdUser);
 
         await repository.UpdateAsync(aggregate, cancellationToken);
 

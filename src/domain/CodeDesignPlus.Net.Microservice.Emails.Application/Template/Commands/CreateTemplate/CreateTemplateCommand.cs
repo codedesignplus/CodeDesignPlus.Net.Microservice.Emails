@@ -1,7 +1,9 @@
+using CodeDesignPlus.Net.Microservice.Emails.Application.Template.DataTransferObjects;
+
 namespace CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.CreateTemplate;
 
 [DtoGenerator]
-public record CreateTemplateCommand(Guid Id, string Name, string Subject, string Body, List<string> Variables, List<string> Attachments, string From, string Alias, bool IsHtml) : IRequest;
+public record CreateTemplateCommand(Guid Id, string Name, string Subject, string Body, List<string> Variables, List<FileAttachmentDto> Attachments, string From, string Alias, bool IsHtml) : IRequest;
 
 public class Validator : AbstractValidator<CreateTemplateCommand>
 {

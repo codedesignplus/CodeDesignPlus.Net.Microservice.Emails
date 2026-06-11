@@ -1,3 +1,4 @@
+using CodeDesignPlus.Net.Observability.Extensions;
 using CodeDesignPlus.Net.Microservice.Commons.EntryPoints.Rest.Middlewares;
 using CodeDesignPlus.Net.Microservice.Commons.EntryPoints.Rest.Resources;
 using CodeDesignPlus.Net.Microservice.Commons.EntryPoints.Rest.Swagger;
@@ -53,6 +54,8 @@ app.UseCors(builder => builder
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
+
+app.UseTraceContext();
 app.UseExceptionMiddleware();
 app.UseHealthChecks();
 app.UseCodeErrors();
