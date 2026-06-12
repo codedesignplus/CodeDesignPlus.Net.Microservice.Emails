@@ -8,7 +8,7 @@ using Microsoft.Graph.Users.Item.SendMail;
 
 namespace CodeDesignPlus.Net.Microservice.Emails.Infrastructure.Services.EmailSender;
 
-public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> options) : IEmailSender
+public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> options, ILogger<EmailSender> logger) : IEmailSender
 {
     public async Task<EmailResponse> SendEmail(EmailMessage emailMessage, CancellationToken cancellationToken)
     {
@@ -53,6 +53,14 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
         }
         catch (Microsoft.Graph.Models.ODataErrors.ODataError ex)
         {
+            logger.LogError(
+                ex, 
+                "Failed to send email via Graph API using account {UserId}. Error code: {GraphErrorCode} - Message: {GraphErrorMessage}", 
+                options.Value.UserIdWithLicense, 
+                ex.Error?.Code,
+                ex.Error?.Message
+            );
+
             return EmailResponse.Create(ex.Error?.Message, ex.Error?.Code);
         }
 
