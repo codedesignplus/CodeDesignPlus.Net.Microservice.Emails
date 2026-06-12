@@ -16,12 +16,12 @@ public class GeneratePdfCommandHandler(
         var renderResult = await mediator.Send(new RenderTemplateQuery(request.TemplateType, request.Values), cancellationToken);
 
         if (!renderResult.Success)
-            return new GeneratePdfResult(Guid.Empty, string.Empty, string.Empty, string.Empty, false, renderResult.Error);
+            return new GeneratePdfResult([], false, renderResult.Error);
 
         var html = Encoding.UTF8.GetString(Convert.FromBase64String(renderResult.RenderedHtml));
 
         var pdfBytes = await pdfGenerator.GenerateFromHtmlAsync(html, cancellationToken);
 
-        return new GeneratePdfResult(Guid.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty, pdfBytes);
+        return new GeneratePdfResult(pdfBytes, true, string.Empty);
     }
 }
