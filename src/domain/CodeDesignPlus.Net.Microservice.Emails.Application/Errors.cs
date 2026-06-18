@@ -15,4 +15,6 @@ public class Errors: IErrorCodes
 
     public const string UserConfigTemplateAlreadyExists = "208 : User config template already exists";
     public const string UserConfigTemplateNotFound = "209 : User config template not found";
+
+    public const string TemplateInvitationToOrganizationNotFound = "210 : Template InvitationToOrganization not found";
 }

@@ -80,7 +80,7 @@ service Emails {
 
 | Type | Subject | Variables |
 |------|---------|-----------|
-| InvitationToOrganization | Te han invitado a {{organization_name}} | display_name, organization_name, inviter_name, invitation_link, current_year |
+| InvitationToOrganization | Te han invitado a {{organization_name}} | display_name, organization_name, current_year |
 | RoleChanged | Tu rol ha sido actualizado | display_name, organization_name, new_role, current_year |
 | AccountDeactivated | Tu cuenta ha sido desactivada | display_name, organization_name, reason, support_email, current_year |
 | DataExportReady | Tu exportacion de datos esta lista | display_name, download_url, expiration_date, current_year |
