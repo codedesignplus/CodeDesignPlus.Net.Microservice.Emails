@@ -17,10 +17,17 @@ public interface IEmailSender
     /// <summary>
     /// Builds the body of the email message using a template and values
     /// </summary>
-    /// <param name="template">
-    /// <param name="values"></param>
-    /// <returns></returns>
+    /// <param name="template">body message</param>
+    /// <param name="values">The metadata to replace body templates</param>
+    /// <returns>Return the body string with new values</returns>
     string BuildBody(string template, Dictionary<string, string> values);
+    /// <summary>
+    /// Builds the subject of the email message using a template and values
+    /// </summary>
+    /// <param name="template">subject message</param>
+    /// <param name="values">The metadata to replace subject templates</param>
+    /// <returns>Return the subject string with new values</returns>
+    string BuildSubject(string subject, Dictionary<string, string> values);
 
 
 }

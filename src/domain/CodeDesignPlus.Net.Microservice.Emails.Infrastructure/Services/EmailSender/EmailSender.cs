@@ -109,4 +109,20 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
 
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(templateDecode));
     }
+
+    public string BuildSubject(string subject, Dictionary<string, string> values)
+    {
+        if (string.IsNullOrEmpty(subject))
+            throw new ArgumentNullException(nameof(subject));
+
+        if (values == null || values.Count == 0)
+            return subject;
+
+        foreach (var kvp in values)
+        {
+            subject = subject.Replace($"{{{{{kvp.Key}}}}}", kvp.Value);
+        }
+
+        return subject;
+    }
 }

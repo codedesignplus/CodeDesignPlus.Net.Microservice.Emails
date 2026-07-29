@@ -20,17 +20,18 @@ public class SendEmailCommandHandler(IEmailsRepository repository, IPubSub pubsu
 
         var template = await repository.FindAsync<TemplateAggregate>(request.IdTemplate, cancellationToken);
 
+        var subject = emailSender.BuildBody(template.Subject, request.Values);
         var body = emailSender.BuildBody(template.Body, request.Values);
         var from = template.From;
         var alias = template.Alias;
         var isHtml = template.IsHtml;
         var attachments = request.Attachments;
 
-        var message = EmailMessage.Create(request.Subject, body, request.To, request.Cc, request.Bcc, from, alias, attachments, isHtml);
+        var message = EmailMessage.Create(subject, body, request.To, request.Cc, request.Bcc, from, alias, attachments, isHtml);
 
         var response = await emailSender.SendEmail(message, cancellationToken);
 
-        var aggregate = EmailsAggregate.Create(request.Id, request.To, request.Cc, request.Bcc, request.Subject, body, from, attachments, isHtml, request.Values, response.StatusCode, response.Error, user.Tenant);
+        var aggregate = EmailsAggregate.Create(request.Id, request.To, request.Cc, request.Bcc, subject, body, from, attachments, isHtml, request.Values, response.StatusCode, response.Error, user.Tenant);
 
         await repository.CreateAsync(aggregate, cancellationToken);
 
