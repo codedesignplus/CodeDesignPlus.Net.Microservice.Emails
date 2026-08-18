@@ -20,7 +20,9 @@ public class SendEmailCommandHandler(IEmailsRepository repository, IPubSub pubsu
 
         var template = await repository.FindAsync<TemplateAggregate>(request.IdTemplate, cancellationToken);
 
-        var subject = emailSender.BuildBody(template.Subject, request.Values);
+        // El asunto viaja en texto plano y el cuerpo en base64: SendEmail decodifica solo el cuerpo.
+        // Pasar el asunto por BuildBody lo trataba como base64 y reventaba con cualquier plantilla.
+        var subject = emailSender.BuildSubject(template.Subject, request.Values);
         var body = emailSender.BuildBody(template.Body, request.Values);
         var from = template.From;
         var alias = template.Alias;
