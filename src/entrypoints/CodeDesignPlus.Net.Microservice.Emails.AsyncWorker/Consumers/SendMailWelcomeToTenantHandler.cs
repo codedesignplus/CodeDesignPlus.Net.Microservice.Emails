@@ -1,5 +1,6 @@
 using CodeDesignPlus.Net.Microservice.Emails.Application.User.Commands.SendMailWelcomeToTenant;
 using CodeDesignPlus.Net.Microservice.Emails.AsyncWorker.DomainEvents;
+using CodeDesignPlus.Net.Microservice.Emails.Domain.Services;
 using MediatR;
 
 namespace CodeDesignPlus.Net.Microservice.Emails.AsyncWorker.Consumers;
@@ -16,7 +17,9 @@ public class SendMailWelcomeToTenantHandler(IMediator mediator) : IEventHandler<
     public Task HandleAsync(TenantAddedDomainEvent data, CancellationToken token)
     {
         var command = new SendMailWelcomeToTenantCommand(
-            data.AggregateId,
+            // El identificador del correo describe la pareja usuario + copropiedad. Usar solo el del usuario
+            // hacia que su segunda copropiedad chocara con la bienvenida de la primera y no llegara nunca.
+            EmailIdentity.ForWelcomeToTenant(data.AggregateId, data.Tenant.Id),
             data.Email,
             data.DisplayName,
             data.Tenant.Id,
