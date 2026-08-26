@@ -20,9 +20,18 @@ namespace CodeDesignPlus.Net.Microservice.Emails.Infrastructure
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
+            services.AddOptions<PdfGeneratorOptions>()
+                .Bind(configuration.GetSection(PdfGeneratorOptions.Section))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
             services.AddScoped<IGraphClient, GraphClient>();
             services.AddScoped<IEmailSender, EmailSender>();
-            services.AddScoped<IPdfGenerator, PdfGenerator>();
+
+            // SINGLETON A PROPOSITO, y es la mitad del arreglo. Como Scoped, cada peticion
+            // arrancaba su propio Chromium y el pod moria por OOM. El navegador se comparte; lo
+            // que se crea por peticion es la pestaña.
+            services.AddSingleton<IPdfGenerator, PdfGenerator>();
             services.AddFileStorage(configuration);
             services.AddAI(configuration);
             services.AddHostedService<SystemTemplateSeedService>();

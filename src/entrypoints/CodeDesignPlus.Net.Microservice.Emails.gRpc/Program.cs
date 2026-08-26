@@ -1,3 +1,4 @@
+using CodeDesignPlus.Net.Microservice.Emails.Infrastructure.Services.PdfGenerator;
 using CodeDesignPlus.Net.Observability.Interceptors;
 using CodeDesignPlus.Net.gRpc.Clients.Extensions;
 using CodeDesignPlus.Net.Logger.Extensions;
@@ -38,7 +39,12 @@ builder.Services.AddMongo<CodeDesignPlus.Net.Microservice.Emails.Infrastructure.
 builder.Services.AddRedis(builder.Configuration);
 builder.Services.AddRabbitMQ<CodeDesignPlus.Net.Microservice.Emails.Domain.Startup>(builder.Configuration);
 builder.Services.AddSecurity(builder.Configuration);
-builder.Services.AddObservability(builder.Configuration, builder.Environment);
+// EL MEDIDOR DEL PDF SE DECLARA AQUI O NO SALE DEL PROCESO. OpenTelemetry solo exporta los
+// Meter que se le nombran: sin esta linea las metricas se emiten y nadie las recoge, que es
+// justo como no tenerlas. Son las que dicen cuantos renderizados hay a la vez, cuanto esperan
+// en cola y cuantos se descartan por no conseguir hueco.
+builder.Services.AddObservability(builder.Configuration, builder.Environment,
+    metrics => metrics.AddMeter(PdfGenerator.MeterName));
 builder.Services.AddLogger(builder.Configuration);
 builder.Services.AddCache(builder.Configuration);
 builder.Services.AddHealthChecksServices();
