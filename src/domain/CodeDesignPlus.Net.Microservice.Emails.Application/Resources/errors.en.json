@@ -1,0 +1,16 @@
+{
+  "language": "en",
+  "errors": {
+    "200": "UnknownError",
+    "201": "Invalid Request",
+    "202": "Emails already was sent",
+    "203": "Template already exists",
+    "204": "Template not found",
+    "205": "Template Password Temp not found",
+    "206": "Secret context is not valid or not found in Vault options.",
+    "207": "Email not found",
+    "208": "User config template already exists",
+    "209": "User config template not found",
+    "210": "Template InvitationToOrganization not found"
+  }
+}
