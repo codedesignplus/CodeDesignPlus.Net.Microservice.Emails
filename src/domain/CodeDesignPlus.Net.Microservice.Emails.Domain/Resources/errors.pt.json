@@ -1,0 +1,29 @@
+{
+  "language": "pt",
+  "errors": {
+    "100": "Erro desconhecido.",
+    "101": "O identificador não é válido.",
+    "102": "A copia oculta não é válida.",
+    "103": "O assunto não é válido.",
+    "104": "O corpo da mensagem não é válido.",
+    "105": "O remetente não é válido.",
+    "106": "Os anexos não são válidos.",
+    "107": "O servidor de é-mail não é válido.",
+    "108": "A copia não é válida.",
+    "109": "O destinatário não é válido.",
+    "110": "O identificador do modelo não é válido.",
+    "111": "O nome do modelo não é válido.",
+    "112": "O assunto do modelo não é válido.",
+    "113": "O corpo do modelo não é válido.",
+    "114": "As variáveis do modelo não são válidas.",
+    "115": "Os anexos do modelo não são válidos.",
+    "116": "O remetente do modelo não é válido.",
+    "117": "O apelido do modelo não é válido.",
+    "118": "O tipo de modelo não é válido.",
+    "119": "O assunto não é válido.",
+    "120": "O endereço do aplicativo de acesso não é válido.",
+    "121": "O identificador do anexo não é válido.",
+    "122": "O nome do anexo não é válido.",
+    "123": "O destino do anexo não é válido."
+  }
+}

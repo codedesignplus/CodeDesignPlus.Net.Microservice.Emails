@@ -1,0 +1,16 @@
+{
+  "language": "fr",
+  "errors": {
+    "200": "Erreur inconnue.",
+    "201": "La requête n'est pas valide.",
+    "202": "Cet e-mail a déjà été envoyé.",
+    "203": "Ce modèle existe déjà.",
+    "204": "Modèle introuvable.",
+    "205": "Modèle de mot de passe temporaire introuvable.",
+    "206": "Le contexte de secrets n'est pas valide ou absent de la configuration Vault.",
+    "207": "E-mail introuvable.",
+    "208": "Cet utilisateur a déjà ce modèle configuré.",
+    "209": "Configuration de modèle de l'utilisateur introuvable.",
+    "210": "Modèle d'invitation à l'organisation introuvable."
+  }
+}

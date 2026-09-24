@@ -1,0 +1,16 @@
+{
+  "language": "pt",
+  "errors": {
+    "200": "Erro desconhecido.",
+    "201": "A requisição não é válida.",
+    "202": "Esse é-mail já foi enviado.",
+    "203": "Esse modelo já existe.",
+    "204": "Não encontramos esse modelo.",
+    "205": "Não encontramos o modelo de senha temporária.",
+    "206": "O contexto de segredos não é válido ou não está configurado no Vault.",
+    "207": "Não encontramos esse é-mail.",
+    "208": "Esse usuário já tem esse modelo configurado.",
+    "209": "Não encontramos a configuração de modelo do usuário.",
+    "210": "Não encontramos o modelo de convite para a organização."
+  }
+}

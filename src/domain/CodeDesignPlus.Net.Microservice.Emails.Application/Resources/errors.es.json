@@ -1,16 +1,16 @@
 {
   "language": "es",
   "errors": {
-    "200": "",
-    "201": "",
-    "202": "",
-    "203": "",
-    "204": "",
-    "205": "",
-    "206": "",
-    "207": "",
-    "208": "",
-    "209": "",
-    "210": ""
+    "200": "Error desconocido.",
+    "201": "La petición no es válida.",
+    "202": "Ese correo ya se envío.",
+    "203": "Esa plantilla ya existe.",
+    "204": "No encontramos esa plantilla.",
+    "205": "No encontramos la plantilla de contraseña temporal.",
+    "206": "El contexto de secretos no es válido o no está configurado en Vault.",
+    "207": "No encontramos ese correo.",
+    "208": "Ese usuario ya tiene configurada esa plantilla.",
+    "209": "No encontramos la configuración de plantilla del usuario.",
+    "210": "No encontramos la plantilla de invitación a la organización."
   }
 }
