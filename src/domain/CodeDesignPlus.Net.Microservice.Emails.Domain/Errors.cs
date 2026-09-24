@@ -1,36 +1,38 @@
+using CodeDesignPlus.Net.Exceptions;
+
 namespace CodeDesignPlus.Net.Microservice.Emails.Domain;
 
 public class Errors: IErrorCodes
 {    
-    public const string UnknownError = "100 : UnknownError";
+    public static readonly Error UnknownError = new("100", "UnknownError");
 
-    public const string IdEmailIsInvalid = "101 : The id is invalid"; 
-    public const string BccEmailIsInvalid = "102 : The copy hidden email is invalid";
-    public const string SubjectEmailIsInvalid = "103 : The Subject is invalid"; 
-    public const string BodyEmailIsInvalid = "104 : The Body is invalid"; 
-    public const string FromEmailIsInvalid = "105 : The From is invalid"; 
-    public const string AttachmentsEmailIsInvalid = "106 : The Attachments are invalid"; 
-    public const string ServerEmailIsInvalid = "107 : The Server is invalid";
-    public const string CcEmailIsInvalid = "108 : The copy email is invalid";
-    public const string ToEmailIsInvalid = "109 : The destination email is invalid";
+    public static readonly Error IdEmailIsInvalid = new("101", "The id is invalid"); 
+    public static readonly Error BccEmailIsInvalid = new("102", "The copy hidden email is invalid");
+    public static readonly Error SubjectEmailIsInvalid = new("103", "The Subject is invalid"); 
+    public static readonly Error BodyEmailIsInvalid = new("104", "The Body is invalid"); 
+    public static readonly Error FromEmailIsInvalid = new("105", "The From is invalid"); 
+    public static readonly Error AttachmentsEmailIsInvalid = new("106", "The Attachments are invalid"); 
+    public static readonly Error ServerEmailIsInvalid = new("107", "The Server is invalid");
+    public static readonly Error CcEmailIsInvalid = new("108", "The copy email is invalid");
+    public static readonly Error ToEmailIsInvalid = new("109", "The destination email is invalid");
 
-    public const string IdTemplateIsInvalid = "110 : The id template is invalid";
-    public const string NameTemplateIsInvalid = "111 : The name template is invalid";
-    public const string SubjectTemplateIsInvalid = "112 : The subject template is invalid";
-    public const string BodyTemplateIsInvalid = "113 : The body template is invalid";
-    public const string VariablesTemplateIsInvalid = "114 : The variables template is invalid";
-    public const string AttachmentsTemplateIsInvalid = "115 : The attachments template is invalid";
+    public static readonly Error IdTemplateIsInvalid = new("110", "The id template is invalid");
+    public static readonly Error NameTemplateIsInvalid = new("111", "The name template is invalid");
+    public static readonly Error SubjectTemplateIsInvalid = new("112", "The subject template is invalid");
+    public static readonly Error BodyTemplateIsInvalid = new("113", "The body template is invalid");
+    public static readonly Error VariablesTemplateIsInvalid = new("114", "The variables template is invalid");
+    public static readonly Error AttachmentsTemplateIsInvalid = new("115", "The attachments template is invalid");
 
-    public const string FromTemplateIsInvalid = "116 : The from template is invalid";
-    public const string AliasTemplateIsInvalid = "117 : The alias template is invalid";
+    public static readonly Error FromTemplateIsInvalid = new("116", "The from template is invalid");
+    public static readonly Error AliasTemplateIsInvalid = new("117", "The alias template is invalid");
 
-    public const string TypeTemplateIsInvalid = "118 : The type template is invalid";
+    public static readonly Error TypeTemplateIsInvalid = new("118", "The type template is invalid");
 
-    public const string SubjectIsInvalid = "119 : The subject is invalid";
+    public static readonly Error SubjectIsInvalid = new("119", "The subject is invalid");
 
-    public const string UriLoginAppIsInvalid = "120 : The URI of the login application is invalid";
+    public static readonly Error UriLoginAppIsInvalid = new("120", "The URI of the login application is invalid");
 
-    public const string FileAttachmentIdIsInvalid = "121 : The file attachment id is invalid";
-    public const string FileAttachmentNameIsInvalid = "122 : The file attachment name is invalid";
-    public const string FileAttachmentTargetIsInvalid = "123 : The file attachment target is invalid";
+    public static readonly Error FileAttachmentIdIsInvalid = new("121", "The file attachment id is invalid");
+    public static readonly Error FileAttachmentNameIsInvalid = new("122", "The file attachment name is invalid");
+    public static readonly Error FileAttachmentTargetIsInvalid = new("123", "The file attachment target is invalid");
 }
