@@ -13,6 +13,6 @@ public class GetAllQueryHandler(ITemplateRepository repository, IMapper mapper, 
 
         var mapped = mapper.Map<List<TemplateDto>>(templates);
 
-        return Pagination<TemplateDto>.Create(mapped, mapped.Count, 0, mapped.Count);
+        return Pagination<TemplateDto>.Create(mapped, mapped.Count, limit: mapped.Count, skip: 0);
     }
 }
