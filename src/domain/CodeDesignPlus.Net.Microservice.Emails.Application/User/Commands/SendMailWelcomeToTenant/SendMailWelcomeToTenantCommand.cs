@@ -1,7 +1,7 @@
 namespace CodeDesignPlus.Net.Microservice.Emails.Application.User.Commands.SendMailWelcomeToTenant;
 
 [DtoGenerator]
-public record SendMailWelcomeToTenantCommand(Guid Id, string Email, string? DisplayName, Guid TenantId, string TenantName) : IRequest;
+public record SendMailWelcomeToTenantCommand(Guid Id, string Email, string? DisplayName, Guid TenantId, string TenantName, bool ByPurchase = false) : IRequest;
 
 public class Validator : AbstractValidator<SendMailWelcomeToTenantCommand>
 {

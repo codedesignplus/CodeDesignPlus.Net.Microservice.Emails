@@ -70,6 +70,31 @@ public class SendMailWelcomeToTenantHandlerTest
             EmailIdentity.ForWelcomeToTenant(Usuario, Malpelo));
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task HandleAsync_PassesWhetherTheUserBoughtTheTenant(bool byPurchase)
+    {
+        var sent = new List<SendMailWelcomeToTenantCommand>();
+        var data = new TenantAddedDomainEvent(Usuario, "Wilzon Liscano", "wliscano+adm@codedesignplus.com",
+            new TenantInfo { Id = Malpelo, Name = "Malpelo X" }, byPurchase);
+
+        await Handler(Mediator(sent)).HandleAsync(data, CancellationToken.None);
+
+        Assert.Equal(byPurchase, Assert.Single(sent).ByPurchase);
+    }
+
+    [Fact]
+    public async Task HandleAsync_EventFromAnOlderUsersVersion_IsTreatedAsAnInvitation()
+    {
+        // ms-users may be deployed after ms-emails: an event without the flag must keep sending the invitation.
+        var sent = new List<SendMailWelcomeToTenantCommand>();
+
+        await Handler(Mediator(sent)).HandleAsync(Evento(Malpelo, "Malpelo X"), CancellationToken.None);
+
+        Assert.False(Assert.Single(sent).ByPurchase);
+    }
+
     private static SendMailWelcomeToTenantHandler Handler(IMediator mediator) => new(mediator);
 
     private static IMediator Mediator(List<SendMailWelcomeToTenantCommand> sink)

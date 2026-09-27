@@ -19,4 +19,5 @@ public class Errors: IErrorCodes
     public static readonly Error UserConfigTemplateNotFound = new("209");
 
     public static readonly Error TemplateInvitationToOrganizationNotFound = new("210");
+    public static readonly Error TemplateTenantReadyNotFound = new("211");
 }

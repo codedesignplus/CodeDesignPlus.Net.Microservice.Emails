@@ -11,6 +11,7 @@ public class TenantAddedDomainEvent(
     string? displayName,
     string email,
     TenantInfo tenant,
+    bool byPurchase = false,
     Guid? eventId = null,
     Instant? occurredAt = null,
     Dictionary<string, object>? metadata = null
@@ -19,6 +20,12 @@ public class TenantAddedDomainEvent(
     public string? DisplayName { get; } = displayName;
     public string Email { get; } = email;
     public TenantInfo Tenant { get; } = tenant;
+
+    /// <summary>
+    /// True when the user joined the tenant by buying it. Older ms-users versions do not send it, so it defaults to
+    /// an invitation.
+    /// </summary>
+    public bool ByPurchase { get; } = byPurchase;
 }
 
 public class TenantInfo

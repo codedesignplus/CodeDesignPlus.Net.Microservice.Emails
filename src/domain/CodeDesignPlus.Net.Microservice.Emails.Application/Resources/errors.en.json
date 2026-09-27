@@ -11,6 +11,7 @@
     "207": "Email not found",
     "208": "User config template already exists",
     "209": "User config template not found",
-    "210": "Template InvitationToOrganization not found"
+    "210": "Template InvitationToOrganization not found",
+    "211": "Template TenantReady not found"
   }
 }

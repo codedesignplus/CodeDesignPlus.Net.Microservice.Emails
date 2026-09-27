@@ -23,7 +23,8 @@ public class SendMailWelcomeToTenantHandler(IMediator mediator) : IEventHandler<
             data.Email,
             data.DisplayName,
             data.Tenant.Id,
-            data.Tenant.Name
+            data.Tenant.Name,
+            data.ByPurchase
         );
 
         return mediator.Send(command, token);

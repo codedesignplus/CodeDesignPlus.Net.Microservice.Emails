@@ -15,9 +15,14 @@ public class SendMailWelcomeToTenantCommandHandler(ITemplateRepository templateR
     {
         ApplicationGuard.IsNull(request, Errors.InvalidRequest);
 
-        var template = await templateRepository.FindByNameAndTenantAsync(nameof(TypeTemplate.InvitationToOrganization), null, cancellationToken);
+        // Whoever bought the tenant was not invited to it: they get "your tenant is ready" (pendings/069).
+        var (templateName, missing) = request.ByPurchase
+            ? (nameof(TypeTemplate.TenantReady), Errors.TemplateTenantReadyNotFound)
+            : (nameof(TypeTemplate.InvitationToOrganization), Errors.TemplateInvitationToOrganizationNotFound);
 
-        ApplicationGuard.IsNull(template, Errors.TemplateInvitationToOrganizationNotFound);
+        var template = await templateRepository.FindByNameAndTenantAsync(templateName, null, cancellationToken);
+
+        ApplicationGuard.IsNull(template, missing);
 
         var sendMailCommand = new SendEmailCommand(
             request.Id,

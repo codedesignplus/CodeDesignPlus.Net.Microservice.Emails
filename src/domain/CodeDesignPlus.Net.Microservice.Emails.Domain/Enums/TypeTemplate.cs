@@ -22,5 +22,6 @@ public enum TypeTemplate
     InvitationToOrganization = 20,
     RoleChanged = 21,
     AccountDeactivated = 22,
-    DataExportReady = 23
+    DataExportReady = 23,
+    TenantReady = 24
 }
