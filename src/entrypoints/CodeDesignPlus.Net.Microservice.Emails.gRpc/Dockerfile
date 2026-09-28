@@ -1,10 +1,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["nuget.config", "nuget.config"]
+COPY ["src/domain/CodeDesignPlus.Net.Microservice.Emails.Application/CodeDesignPlus.Net.Microservice.Emails.Application.csproj", "domain/CodeDesignPlus.Net.Microservice.Emails.Application/"]
+COPY ["src/domain/CodeDesignPlus.Net.Microservice.Emails.Domain/CodeDesignPlus.Net.Microservice.Emails.Domain.csproj", "domain/CodeDesignPlus.Net.Microservice.Emails.Domain/"]
+COPY ["src/domain/CodeDesignPlus.Net.Microservice.Emails.Infrastructure/CodeDesignPlus.Net.Microservice.Emails.Infrastructure.csproj", "domain/CodeDesignPlus.Net.Microservice.Emails.Infrastructure/"]
+COPY ["src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc/CodeDesignPlus.Net.Microservice.Emails.gRpc.csproj", "entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc/"]
+RUN dotnet restore "./entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc/CodeDesignPlus.Net.Microservice.Emails.gRpc.csproj" /p:PublishReadyToRun=true
 COPY ["src/domain/", "domain/"]
 COPY ["src/entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc/", "entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc/"]
-COPY ["nuget.config", "nuget.config"]
-RUN dotnet restore "./entrypoints/CodeDesignPlus.Net.Microservice.Emails.gRpc/CodeDesignPlus.Net.Microservice.Emails.gRpc.csproj"
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
