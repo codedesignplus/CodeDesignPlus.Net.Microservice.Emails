@@ -1,3 +1,6 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace CodeDesignPlus.Net.Microservice.Emails.Default.Test.Validations;
 
 /// <summary>
@@ -30,14 +33,40 @@ public class StartupTest
     }
 
     /// <summary>
-    /// Validates that the startup services do not throw exceptions during initialization.
+    /// La capa Infrastructure arranca con las secciones que necesita: Email (el remitente de Graph) y FileStorage.
     /// </summary>
-    [Theory]
-    [Startup<Infrastructure.Startup>]
-    public void Sturtup_CheckNotThrowException_Infrastructure(IStartup startup, Exception exception)
+    /// <remarks>
+    /// No usa [Startup&lt;&gt;]: ese atributo inicializa con una configuracion vacia, y este Startup exige, a proposito,
+    /// las secciones Email y FileStorage. Sin ellas el micro no debe arrancar (ver la prueba siguiente).
+    /// </remarks>
+    [Fact]
+    public void Startup_Infrastructure_InitializesWithItsRequiredSections()
     {
-        // Assert
-        Assert.NotNull(startup);
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Email:TenantId"] = "tenant",
+                ["Email:ClientId"] = "client",
+                ["Email:ClientSecret"] = "secret",
+                ["FileStorage:Local:Enable"] = "true",
+            })
+            .Build();
+
+        var exception = Record.Exception(() => new Infrastructure.Startup().Initialize(new ServiceCollection(), configuration));
+
         Assert.Null(exception);
+    }
+
+    /// <summary>
+    /// Sin la seccion Email el micro no arranca: no hay remitente con el que enviar.
+    /// </summary>
+    [Fact]
+    public void Startup_Infrastructure_WithoutEmailSection_Throws()
+    {
+        var configuration = new ConfigurationBuilder().Build();
+
+        var exception = Record.Exception(() => new Infrastructure.Startup().Initialize(new ServiceCollection(), configuration));
+
+        Assert.IsType<InvalidOperationException>(exception);
     }
 }
