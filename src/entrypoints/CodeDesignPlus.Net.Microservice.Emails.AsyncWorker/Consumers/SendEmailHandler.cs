@@ -55,7 +55,12 @@ public class SendEmailHandler(
         {
             try
             {
-                var response = await fileStorage.DownloadAsync(attachment.Name, attachment.Target, tenant, token);
+                // ms-filestorage guarda cada archivo en {target}/{id}/{nombre} (pendings/167); los adjuntos subidos
+                // antes siguen en {target}/{nombre}.
+                var response = await fileStorage.DownloadAsync(attachment.Name, $"{attachment.Target}/{attachment.Id}", tenant, token);
+
+                if (response is not { Success: true, Stream: not null })
+                    response = await fileStorage.DownloadAsync(attachment.Name, attachment.Target, tenant, token);
 
                 if (response is { Success: true, Stream: not null })
                 {
