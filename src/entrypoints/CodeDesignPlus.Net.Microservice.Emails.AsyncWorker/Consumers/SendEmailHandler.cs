@@ -28,8 +28,10 @@ public class SendEmailHandler(
             return;
         }
 
-        var attachments = await DownloadAttachmentsAsync(
-            [.. data.Attachments, .. template.Attachments], data.Tenant, token);
+        // Los adjuntos del envío son de la copropiedad; los de una plantilla del sistema viven en el espacio de la
+        // plataforma (Guid.Empty), no en el de la copropiedad que envía (pendings/168).
+        var attachments = await DownloadAttachmentsAsync(data.Attachments, data.Tenant, token);
+        attachments.AddRange(await DownloadAttachmentsAsync(template.Attachments, template.Tenant ?? Guid.Empty, token));
 
         await mediator.Send(new SendEmailCommand(
             Guid.NewGuid(),
