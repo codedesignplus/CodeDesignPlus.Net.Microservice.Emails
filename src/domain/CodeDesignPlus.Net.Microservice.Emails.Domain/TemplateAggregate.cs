@@ -59,6 +59,9 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         Subject = subject;
         Body = Base64.IsValid(body) ? body : Convert.ToBase64String(Encoding.UTF8.GetBytes(body));
         Variables = variables ?? [];
+
+        var removed = Attachments.Select(attachment => attachment.Id).Except((attachments ?? []).Select(attachment => attachment.Id)).ToList();
+
         Attachments = attachments ?? [];
         From = from;
         Alias = alias;
@@ -68,6 +71,8 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         UpdatedBy = updatedBy;
 
         this.AddEvent(TemplateUpdatedDomainEvent.Create(Id, Name, Subject, Body, Variables, Attachments, Tenant));
+
+        ReleaseFiles(removed, updatedBy);
     }
 
     public void Delete(Guid deletedBy)
@@ -78,5 +83,19 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         this.DeletedBy = deletedBy;
 
         this.AddEvent(TemplateDeletedDomainEvent.Create(Id, Name, Subject, Body, Variables, Attachments, Tenant));
+
+        ReleaseFiles(Attachments.Select(attachment => attachment.Id), deletedBy);
+    }
+
+    /// <summary>
+    /// Avisa a ms-filestorage de los adjuntos que la plantilla ya no usa, para que los desactive (pendings/172). Los de
+    /// una plantilla del sistema son de la plataforma (<see cref="Guid.Empty"/>, pendings/168).
+    /// </summary>
+    private void ReleaseFiles(IEnumerable<Guid> files, Guid releasedBy)
+    {
+        var released = files.ToList();
+
+        if (released.Count > 0)
+            this.AddEvent(FilesReleasedDomainEvent.Create(Id, released, releasedBy, Tenant ?? Guid.Empty));
     }
 }

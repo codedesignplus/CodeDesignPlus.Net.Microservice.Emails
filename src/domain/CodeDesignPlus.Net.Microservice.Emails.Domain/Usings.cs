@@ -1,4 +1,5 @@
 ﻿global using CodeDesignPlus.Net.Core.Abstractions;
+global using CodeDesignPlus.Net.Core.Abstractions.Contracts;
 global using CodeDesignPlus.Net.Core.Abstractions.Attributes;
 global using CodeDesignPlus.Net.Exceptions.Guards;
 global using CodeDesignPlus.Net.Mongo.Abstractions;
