@@ -14,5 +14,9 @@ public static class MapsterConfigEmails
         TypeAdapterConfig<UpdateTemplateDto, UpdateTemplateCommand>.NewConfig();
         TypeAdapterConfig<TemplateAggregate, TemplateDto>.NewConfig();
         TypeAdapterConfig<EmailAddressAttribute, EmailsDto>.NewConfig();
+
+        // El detalle lleva el nombre de cada adjunto, como el evento de envio; sin esto salia el nombre de la clase.
+        TypeAdapterConfig<EmailsAggregate, EmailsDto>.NewConfig()
+            .Map(dest => dest.Attachments, src => src.Attachments.Select(x => x.Name).ToList());
     }
 }
