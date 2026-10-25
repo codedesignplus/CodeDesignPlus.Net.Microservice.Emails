@@ -66,4 +66,19 @@ public class TemplateRepository(IServiceProvider serviceProvider, IOptions<Mongo
 
         return await collection.Find(filter).AnyAsync(cancellationToken);
     }
+
+    /// <inheritdoc />
+    public async Task<bool> CreateIfAbsentAsync(TemplateAggregate template, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await CreateAsync(template, cancellationToken);
+
+            return true;
+        }
+        catch (MongoWriteException exception) when (exception.WriteError?.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return false;
+        }
+    }
 }
