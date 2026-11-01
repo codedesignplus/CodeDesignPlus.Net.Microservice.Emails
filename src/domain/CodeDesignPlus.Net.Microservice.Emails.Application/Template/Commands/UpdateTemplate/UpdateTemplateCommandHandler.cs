@@ -14,7 +14,7 @@ public class UpdateTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         var attachments = request.Attachments?.Select(a => new FileAttachment(a.Id, a.Name, a.Target)).ToList() ?? [];
 
-        aggregate.Update(request.Name, request.Subject, request.Body, request.Variables, attachments, request.From, request.Alias, request.IsHtml, user.IdUser);
+        aggregate.Update(request.Name, request.Subject, request.Body, request.Variables, attachments, request.From, request.Alias, request.IsHtml, user.IdUser, request.SensitiveVariables);
 
         await repository.UpdateAsync(aggregate, cancellationToken);
 

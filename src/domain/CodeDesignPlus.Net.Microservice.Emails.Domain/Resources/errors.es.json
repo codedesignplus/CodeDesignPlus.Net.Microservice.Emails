@@ -24,6 +24,7 @@
     "120": "La dirección de la aplicación de acceso no es válida.",
     "121": "El identificador del adjunto no es válido.",
     "122": "El nombre del adjunto no es válido.",
-    "123": "El destino del adjunto no es válido."
+    "123": "El destino del adjunto no es válido.",
+    "124": "Una variable sensible de la plantilla no está entre sus variables."
   }
 }

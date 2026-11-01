@@ -35,4 +35,6 @@ public class Errors: IErrorCodes
     public static readonly Error FileAttachmentIdIsInvalid = new("121");
     public static readonly Error FileAttachmentNameIsInvalid = new("122");
     public static readonly Error FileAttachmentTargetIsInvalid = new("123");
+
+    public static readonly Error SensitiveVariablesTemplateIsInvalid = new("124");
 }

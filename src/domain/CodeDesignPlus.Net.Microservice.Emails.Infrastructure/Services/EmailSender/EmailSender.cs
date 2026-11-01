@@ -61,10 +61,10 @@ public class EmailSender(IGraphClient graphClient, IOptions<EmailOptions> option
                 ex.Error?.Message
             );
 
-            return EmailResponse.Create(ex.Error?.Message, ex.Error?.Code);
+            return EmailResponse.Failure(ex.Error?.Message, ex.Error?.Code);
         }
 
-        return EmailResponse.Create("202", "The email was accepted for delivery.");
+        return EmailResponse.Success("202");
     }
 
     private static List<Recipient>? BuildRecipients(List<string>? emails)

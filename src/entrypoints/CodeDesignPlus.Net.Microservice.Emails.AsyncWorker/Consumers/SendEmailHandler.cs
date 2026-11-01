@@ -41,7 +41,9 @@ public class SendEmailHandler(
             data.Bcc,
             template.Subject,
             attachments,
-            data.Variables
+            data.Variables,
+            // El contexto del worker no tiene copropiedad: la del evento es la del correo (pendings/680).
+            data.Tenant
         ), token);
 
         logger.LogInformation("Email sent to {To} using template '{Template}'",

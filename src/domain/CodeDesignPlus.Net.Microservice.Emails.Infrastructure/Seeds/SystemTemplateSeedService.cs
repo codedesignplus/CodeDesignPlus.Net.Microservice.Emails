@@ -40,7 +40,10 @@ public class SystemTemplateSeedService(
                 var exists = await templateRepository.ExistsByNameAndTenantAsync(data.Name, null, stoppingToken);
 
                 if (exists)
+                {
+                    await DeclareSensitiveVariablesAsync(templateRepository, data, stoppingToken);
                     continue;
+                }
 
                 var template = TemplateAggregate.Create(
                     Guid.NewGuid(),
@@ -53,7 +56,8 @@ public class SystemTemplateSeedService(
                     data.Alias,
                     data.IsHtml,
                     null,
-                    SystemUserId
+                    SystemUserId,
+                    data.SensitiveVariables
                 );
 
                 await templateRepository.CreateAsync(template, stoppingToken);
@@ -66,6 +70,32 @@ public class SystemTemplateSeedService(
         }
 
         logger.LogInformation("System templates seed completed. Seeded {Count} of {Total}.", seeded, templates.Count);
+    }
+
+    /// <summary>
+    /// Las plantillas sembradas antes del 680 no tenían variables sensibles, ni sus copias por copropiedad. Se declaran
+    /// las de la siembra en las que aún no tienen ninguna; las que una copropiedad ya marcó se respetan.
+    /// </summary>
+    private async Task DeclareSensitiveVariablesAsync(ITemplateRepository templateRepository, SystemTemplateSeedData data, CancellationToken stoppingToken)
+    {
+        if (data.SensitiveVariables.Count == 0)
+            return;
+
+        var templates = await templateRepository.GetByNameAsync(data.Name, stoppingToken);
+
+        foreach (var template in templates.Where(template => template.SensitiveVariables.Count == 0))
+        {
+            var declared = data.SensitiveVariables.Where(template.Variables.Contains).ToList();
+
+            if (declared.Count == 0)
+                continue;
+
+            template.DeclareSensitiveVariables(declared, SystemUserId);
+
+            await templateRepository.UpdateAsync(template, stoppingToken);
+
+            logger.LogInformation("Declared sensitive variables of template {Name} for tenant {Tenant}.", template.Name, template.Tenant);
+        }
     }
 
     private static T LoadResource<T>(string fileName)
@@ -91,6 +121,7 @@ internal record SystemTemplateSeedData
     public string Subject { get; init; } = null!;
     public string Body { get; init; } = null!;
     public List<string> Variables { get; init; } = [];
+    public List<string> SensitiveVariables { get; init; } = [];
     public string From { get; init; } = null!;
     public string Alias { get; init; } = null!;
     public bool IsHtml { get; init; }

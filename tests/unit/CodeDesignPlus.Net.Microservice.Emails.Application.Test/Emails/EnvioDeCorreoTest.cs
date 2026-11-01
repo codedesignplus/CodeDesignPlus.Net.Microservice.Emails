@@ -82,7 +82,7 @@ public class EnvioDeCorreoTest
                     Sustituir(Encoding.UTF8.GetString(Convert.FromBase64String(t)), v))));
         sender.Setup(x => x.SendEmail(It.IsAny<EmailMessage>(), It.IsAny<CancellationToken>()))
             .Callback((EmailMessage m, CancellationToken _) => enviado.Value = m)
-            .ReturnsAsync(EmailResponse.Create(null, "202"));
+            .ReturnsAsync(EmailResponse.Success("202"));
 
         var contexto = new Mock<IUserContext>();
         contexto.SetupGet(x => x.Tenant).Returns(Guid.NewGuid());

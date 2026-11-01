@@ -3,7 +3,7 @@ using CodeDesignPlus.Net.Microservice.Emails.Application.Template.DataTransferOb
 namespace CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.CreateTemplate;
 
 [DtoGenerator]
-public record CreateTemplateCommand(Guid Id, string Name, string Subject, string Body, List<string> Variables, List<FileAttachmentDto> Attachments, string From, string Alias, bool IsHtml) : IRequest;
+public record CreateTemplateCommand(Guid Id, string Name, string Subject, string Body, List<string> Variables, List<FileAttachmentDto> Attachments, string From, string Alias, bool IsHtml, List<string>? SensitiveVariables) : IRequest;
 
 public class Validator : AbstractValidator<CreateTemplateCommand>
 {

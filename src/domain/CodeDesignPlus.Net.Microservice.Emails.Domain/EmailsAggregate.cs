@@ -13,9 +13,13 @@ public class EmailsAggregate(Guid id) : AggregateRootBase(id)
     public Dictionary<string, string> Values { get; private set; } = [];
     public string? Code { get; private set; } = null!;
     public string? Error { get; private set; } = null!;
+    /// <summary>
+    /// Whether the provider accepted the email (pendings/680).
+    /// </summary>
+    public bool Succeeded { get; private set; }
     public Guid? Tenant { get; private set; } = null!;
 
-    public EmailsAggregate(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<Models.Attachment> attachments, bool isHtml, Dictionary<string, string> values, string? code, string? error, Guid? tenant) : this(id)
+    public EmailsAggregate(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<Models.Attachment> attachments, bool isHtml, Dictionary<string, string> values, string? code, string? error, Guid? tenant, bool succeeded) : this(id)
     {
         DomainGuard.GuidIsEmpty(id, Errors.IdEmailIsInvalid);
         DomainGuard.IsEmpty(to, Errors.ToEmailIsInvalid);
@@ -34,6 +38,7 @@ public class EmailsAggregate(Guid id) : AggregateRootBase(id)
         Values = values;
         Code = code;
         Error = error;
+        Succeeded = succeeded;
         Tenant = tenant;
 
         CreatedAt = SystemClock.Instance.GetCurrentInstant();
@@ -41,8 +46,8 @@ public class EmailsAggregate(Guid id) : AggregateRootBase(id)
         this.AddEvent(EmailSentDomainEvent.Create(Id, To, Cc, Bcc, Subject, Body, From, [.. Attachments.Select(x => x.Name)], IsHtml, Values, Code, Error, Tenant));
     }
 
-    public static EmailsAggregate Create(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<Models.Attachment> attachments, bool isHtml, Dictionary<string, string> values, string? code, string? error, Guid? tenant)
+    public static EmailsAggregate Create(Guid id, List<string> to, List<string> cc, List<string> bcc, string subject, string body, string from, List<Models.Attachment> attachments, bool isHtml, Dictionary<string, string> values, string? code, string? error, Guid? tenant, bool succeeded)
     {
-        return new EmailsAggregate(id, to, cc, bcc, subject, body, from, attachments, isHtml, values, code, error, tenant);
+        return new EmailsAggregate(id, to, cc, bcc, subject, body, from, attachments, isHtml, values, code, error, tenant, succeeded);
     }
 }

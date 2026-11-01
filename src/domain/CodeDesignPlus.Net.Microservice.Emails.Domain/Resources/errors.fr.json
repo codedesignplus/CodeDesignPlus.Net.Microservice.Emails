@@ -24,6 +24,7 @@
     "120": "L'adresse de l'application de connexion n'est pas valide.",
     "121": "L'identifiant de la pièce jointe n'est pas valide.",
     "122": "Le nom de la pièce jointe n'est pas valide.",
-    "123": "La destination de la pièce jointe n'est pas valide."
+    "123": "La destination de la pièce jointe n'est pas valide.",
+    "124": "Une variable sensible du modèle ne fait pas partie de ses variables."
   }
 }

@@ -68,6 +68,14 @@ public class TemplateRepository(IServiceProvider serviceProvider, IOptions<Mongo
     }
 
     /// <inheritdoc />
+    public async Task<List<TemplateAggregate>> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    {
+        var collection = GetCollection<TemplateAggregate>();
+
+        return await collection.Find(Builders<TemplateAggregate>.Filter.Eq(x => x.Name, name)).ToListAsync(cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task<bool> CreateIfAbsentAsync(TemplateAggregate template, CancellationToken cancellationToken)
     {
         try

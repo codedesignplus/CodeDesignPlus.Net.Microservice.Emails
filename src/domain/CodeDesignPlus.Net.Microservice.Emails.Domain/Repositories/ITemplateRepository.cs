@@ -9,6 +9,11 @@ public interface ITemplateRepository : IRepositoryBase
     Task<bool> ExistsByTenantAsync(Guid tenantId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Las plantillas con ese nombre en todas las copropiedades y en la plataforma, activas o no (pendings/680).
+    /// </summary>
+    Task<List<TemplateAggregate>> GetByNameAsync(string name, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Guarda el registro nuevo si su id no existe todavía (pendings/589, regla 66).
     /// </summary>
     /// <param name="template">El agregado nuevo.</param>

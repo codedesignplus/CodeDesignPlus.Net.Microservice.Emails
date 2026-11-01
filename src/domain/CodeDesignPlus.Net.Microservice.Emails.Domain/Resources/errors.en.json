@@ -24,6 +24,7 @@
     "120": "The URI of the login application is invalid",
     "121": "The file attachment id is invalid",
     "122": "The file attachment name is invalid",
-    "123": "The file attachment target is invalid"
+    "123": "The file attachment target is invalid",
+    "124": "A sensitive variable of the template is not one of its variables"
   }
 }

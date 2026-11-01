@@ -24,6 +24,7 @@
     "120": "O endereço do aplicativo de acesso não é válido.",
     "121": "O identificador do anexo não é válido.",
     "122": "O nome do anexo não é válido.",
-    "123": "O destino do anexo não é válido."
+    "123": "O destino do anexo não é válido.",
+    "124": "Uma variável sensível do modelo não está entre as suas variáveis."
   }
 }

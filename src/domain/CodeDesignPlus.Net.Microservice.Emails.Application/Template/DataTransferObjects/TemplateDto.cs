@@ -10,6 +10,7 @@ public class TemplateDto : IDtoBase
     public string Alias { get; set; } = null!;
     public bool IsHtml { get; set; }
     public List<string> Variables { get; set; } = [];
+    public List<string> SensitiveVariables { get; set; } = [];
     public List<FileAttachmentDto> Attachments { get; set; } = [];
     public Guid? Tenant { get; set; } = null!;
 }

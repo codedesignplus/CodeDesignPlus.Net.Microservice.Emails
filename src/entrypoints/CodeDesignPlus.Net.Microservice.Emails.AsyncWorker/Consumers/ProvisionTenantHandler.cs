@@ -43,7 +43,8 @@ public class ProvisionTenantHandler(
                 template.Alias,
                 template.IsHtml,
                 tenantId,
-                SystemUserId
+                SystemUserId,
+                [.. template.SensitiveVariables]
             );
 
             await templateRepository.CreateAsync(clone, token);

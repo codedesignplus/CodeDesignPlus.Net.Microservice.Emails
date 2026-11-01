@@ -6,6 +6,11 @@ namespace CodeDesignPlus.Net.Microservice.Emails.Application.Emails.Commands.Sen
 
 public class SendEmailCommandHandler(IEmailsRepository repository, IPubSub pubsub, IUserContext user, IEmailSender emailSender) : IRequestHandler<SendEmailCommand>
 {
+    /// <summary>
+    /// What the history keeps in place of the value of a sensitive variable.
+    /// </summary>
+    public const string MaskedValue = "••••••";
+
     public async Task Handle(SendEmailCommand request, CancellationToken cancellationToken)
     {
         ApplicationGuard.IsNull(request, Errors.InvalidRequest);
@@ -33,11 +38,24 @@ public class SendEmailCommandHandler(IEmailsRepository repository, IPubSub pubsu
 
         var response = await emailSender.SendEmail(message, cancellationToken);
 
-        var aggregate = EmailsAggregate.Create(request.Id, request.To, request.Cc, request.Bcc, subject, body, from, attachments, isHtml, request.Values, response.StatusCode, response.Error, user.Tenant);
+        // El correo sale con los valores reales; el historial y el evento los llevan enmascarados, para que una
+        // contraseña temporal o un código no queden guardados ni se lean en el detalle (pendings/680).
+        var masks = template.SensitiveVariables.Any(request.Values.ContainsKey);
+        var storedValues = masks ? Mask(request.Values, template.SensitiveVariables) : request.Values;
+        var storedSubject = masks ? emailSender.BuildSubject(template.Subject, storedValues) : subject;
+        var storedBody = masks ? emailSender.BuildBody(template.Body, storedValues) : body;
+
+        var tenant = request.Tenant ?? user.Tenant;
+
+        var aggregate = EmailsAggregate.Create(request.Id, request.To, request.Cc, request.Bcc, storedSubject, storedBody, from, attachments, isHtml, storedValues, response.StatusCode, response.Error, tenant, response.Succeeded);
 
         await repository.CreateAsync(aggregate, cancellationToken);
 
         await pubsub.PublishAsync(aggregate.GetAndClearEvents(), cancellationToken);
     }
 
+    private static Dictionary<string, string> Mask(Dictionary<string, string> values, List<string> sensitiveVariables)
+    {
+        return values.ToDictionary(kvp => kvp.Key, kvp => sensitiveVariables.Contains(kvp.Key) ? MaskedValue : kvp.Value);
+    }
 }

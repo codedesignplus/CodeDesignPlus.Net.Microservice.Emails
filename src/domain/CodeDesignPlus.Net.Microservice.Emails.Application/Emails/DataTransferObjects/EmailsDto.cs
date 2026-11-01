@@ -24,5 +24,10 @@ public class EmailsDto : IDtoBase
     public Dictionary<string, string> Values { get; set; } = [];
     public string? Code { get; set; } = null!;
     public string? Error { get; set; } = null!;
+    /// <summary>
+    /// Whether the provider accepted the email; the screen reads it instead of guessing from <see cref="Error"/> (pendings/680).
+    /// </summary>
+    public bool Succeeded { get; set; }
+    public Instant CreatedAt { get; set; }
     public Guid? Tenant { get; set; } = null!;
 }

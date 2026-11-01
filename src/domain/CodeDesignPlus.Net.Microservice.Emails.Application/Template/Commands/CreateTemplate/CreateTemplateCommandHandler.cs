@@ -12,7 +12,7 @@ public class CreateTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         var attachments = request.Attachments?.Select(a => new FileAttachment(a.Id, a.Name, a.Target)).ToList() ?? [];
 
-        var aggregate = TemplateAggregate.Create(request.Id, request.Name, request.Subject, request.Body, request.Variables, attachments, request.From, request.Alias, request.IsHtml, user.Tenant, user.IdUser);
+        var aggregate = TemplateAggregate.Create(request.Id, request.Name, request.Subject, request.Body, request.Variables, attachments, request.From, request.Alias, request.IsHtml, user.Tenant, user.IdUser, request.SensitiveVariables);
 
         // Dos envíos que llegan a la vez pasan los dos la comprobación de arriba; el segundo choca contra el id y no publica.
         if (!await repository.CreateIfAbsentAsync(aggregate, cancellationToken))
