@@ -17,7 +17,18 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
     /// Las variables cuyo valor no se guarda en el historial: el correo sale con el valor real y lo guardado lo lleva
     /// enmascarado (pendings/680).
     /// </summary>
-    public List<string> SensitiveVariables { get; private set; } = [];
+    /// <remarks>
+    /// Nunca es nulo: el driver de Mongo crea el agregado sin pasar por los inicializadores, y en las plantillas
+    /// guardadas antes del 680 el campo no existe. Con <c>{ get; private set; } = []</c> llegaba nulo y el envío de
+    /// cualquier correo se caía al leerlo.
+    /// </remarks>
+    public List<string> SensitiveVariables
+    {
+        get => sensitiveVariables ??= [];
+        private set => sensitiveVariables = value ?? [];
+    }
+
+    private List<string>? sensitiveVariables = [];
     public List<FileAttachment> Attachments { get; private set; } = [];
     public Guid? Tenant { get; private set; } = null!;
 
