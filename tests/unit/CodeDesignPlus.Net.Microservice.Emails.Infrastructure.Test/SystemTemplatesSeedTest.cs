@@ -84,6 +84,63 @@ public class SystemTemplatesSeedTest
         Assert.Equal((true, false, true), (body.Contains("{{tax_label}}", StringComparison.Ordinal), body.Contains(">IVA", StringComparison.Ordinal), declared));
     }
 
+    /// <summary>
+    /// Los importes de los correos y recibos de licencias llegan escritos con su símbolo («$ 773.500,00»): la plantilla no
+    /// les pega el código de la moneda detrás, que daba «773,500.00 COP» (pendings/738).
+    /// </summary>
+    [Theory]
+    [InlineData("PurchaseConfirmation")]
+    [InlineData("PurchaseReceipt")]
+    [InlineData("SubscriptionRenewed")]
+    [InlineData("SubscriptionReceipt")]
+    public void Seed_LicenseReceipts_DoNotAppendTheCurrencyCodeToTheAmounts(string name)
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == name);
+
+        // Act
+        var body = template.GetProperty("body").GetString()!;
+
+        // Assert
+        Assert.DoesNotContain("{{currency}}", body, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Sin crédito la fila «Crédito aplicado» no se ve: ms-licenses manda <c>none</c> y la plantilla, que solo reemplaza
+    /// variables, la oculta con ese valor (pendings/738).
+    /// </summary>
+    [Fact]
+    public void Seed_SubscriptionReceipt_TheCreditRowCanBeHidden()
+    {
+        // Arrange
+        var body = Templates().Single(x => x.GetProperty("name").GetString() == "SubscriptionReceipt").GetProperty("body").GetString()!;
+
+        // Act
+        var row = body[body.LastIndexOf("<tr", body.IndexOf("Crédito aplicado", StringComparison.Ordinal), StringComparison.Ordinal)..body.IndexOf("Crédito aplicado", StringComparison.Ordinal)];
+
+        // Assert
+        Assert.Contains("display: {{credit_row_display}};", row, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// El recibo y el correo de una renovación dicen qué periodo se pagó (pendings/738), y la variable está declarada.
+    /// </summary>
+    [Theory]
+    [InlineData("SubscriptionRenewed")]
+    [InlineData("SubscriptionReceipt")]
+    public void Seed_SubscriptionTemplates_SayThePaidPeriod(string name)
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == name);
+
+        // Act
+        var body = template.GetProperty("body").GetString()!;
+        var declared = template.GetProperty("variables").EnumerateArray().Any(x => x.GetString() == "period");
+
+        // Assert
+        Assert.Equal((true, true), (body.Contains("{{period}}", StringComparison.Ordinal), declared));
+    }
+
     private static List<JsonElement> Templates()
     {
         var resource = typeof(SystemTemplateSeedService).Assembly.GetManifestResourceNames().Single(x => x.EndsWith("system-templates.json", StringComparison.Ordinal));
