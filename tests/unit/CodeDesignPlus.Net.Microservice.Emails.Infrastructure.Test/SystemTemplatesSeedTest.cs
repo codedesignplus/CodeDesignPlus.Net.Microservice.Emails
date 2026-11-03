@@ -255,6 +255,42 @@ public class SystemTemplatesSeedTest
         Assert.Equal(2, hidden);
     }
 
+    /// <summary>
+    /// The receipt of a package purchase is its own template (pendings/739): ms-licenses asks for it by name, so it must be a
+    /// template type; it breaks the package down into base, tax and total, says how long it lasts and declares every
+    /// variable it uses.
+    /// </summary>
+    [Fact]
+    public void Seed_PackageReceipt_ShowsBaseTaxTotalAndTerm()
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == "PackageReceipt");
+        var body = template.GetProperty("body").GetString()!;
+        var declared = template.GetProperty("variables").EnumerateArray().Select(x => x.GetString()).ToHashSet();
+
+        // Act
+        var undeclared = System.Text.RegularExpressions.Regex.Matches(body, @"\{\{(\w+)\}\}").Select(match => match.Groups[1].Value).Where(x => !declared.Contains(x)).ToList();
+
+        // Assert
+        Assert.Equal((18, true, 0), ((int)Enum.Parse<TypeTemplate>("PackageReceipt"), new[] { "{{package_subtotal}}", "{{package_tax_label}}", "{{package_tax}}", "{{package_total}}", "{{package_period}}", "{{amount_paid}}" }.All(x => body.Contains(x, StringComparison.Ordinal)), undeclared.Count));
+    }
+
+    /// <summary>
+    /// The package receipt does not list the modules of the license: they are not part of what was bought (pendings/739).
+    /// </summary>
+    [Fact]
+    public void Seed_PackageReceipt_DoesNotListTheLicenseModules()
+    {
+        // Arrange
+        var body = Templates().Single(x => x.GetProperty("name").GetString() == "PackageReceipt").GetProperty("body").GetString()!;
+
+        // Act
+        var mentionsModules = body.Contains("{{modules_list}}", StringComparison.Ordinal) || body.Contains("Módulos", StringComparison.Ordinal);
+
+        // Assert
+        Assert.False(mentionsModules);
+    }
+
     private static List<JsonElement> Templates()
     {
         var resource = typeof(SystemTemplateSeedService).Assembly.GetManifestResourceNames().Single(x => x.EndsWith("system-templates.json", StringComparison.Ordinal));

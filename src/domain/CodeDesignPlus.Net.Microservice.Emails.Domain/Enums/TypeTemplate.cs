@@ -20,6 +20,7 @@ public enum TypeTemplate
     SubscriptionReceipt = 15,
     SubscriptionChanged = 16,
     SubscriptionPackagePurchased = 17,
+    PackageReceipt = 18,
 
     // Notificaciones
     InvitationToOrganization = 20,
