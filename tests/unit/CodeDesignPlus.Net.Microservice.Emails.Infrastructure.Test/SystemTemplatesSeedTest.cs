@@ -63,6 +63,27 @@ public class SystemTemplatesSeedTest
         Assert.Empty(undeclared);
     }
 
+    /// <summary>
+    /// El correo y los recibos de una licencia no dicen «IVA (19%)» fijo: la fila del impuesto la manda ms-licenses según
+    /// el tratamiento del precio (gravado, excluido o exento, pendings/662), y está declarada en la plantilla.
+    /// </summary>
+    [Theory]
+    [InlineData("PurchaseConfirmation")]
+    [InlineData("PurchaseReceipt")]
+    [InlineData("SubscriptionReceipt")]
+    public void Seed_LicenseReceipts_TakeTheTaxRowFromTheSender(string name)
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == name);
+
+        // Act
+        var body = template.GetProperty("body").GetString()!;
+        var declared = template.GetProperty("variables").EnumerateArray().Any(x => x.GetString() == "tax_label");
+
+        // Assert
+        Assert.Equal((true, false, true), (body.Contains("{{tax_label}}", StringComparison.Ordinal), body.Contains(">IVA", StringComparison.Ordinal), declared));
+    }
+
     private static List<JsonElement> Templates()
     {
         var resource = typeof(SystemTemplateSeedService).Assembly.GetManifestResourceNames().Single(x => x.EndsWith("system-templates.json", StringComparison.Ordinal));
