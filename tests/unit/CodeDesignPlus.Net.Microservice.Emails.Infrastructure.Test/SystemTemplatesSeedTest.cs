@@ -196,6 +196,65 @@ public class SystemTemplatesSeedTest
         Assert.True(cells.Count == 5 && cells.All(x => x.Contains("white-space: nowrap", StringComparison.Ordinal)));
     }
 
+    /// <summary>
+    /// Los comprobantes y correos de licencia muestran los paquetes complementarios de la orden y declaran sus variables
+    /// (pendings/739).
+    /// </summary>
+    [Theory]
+    [InlineData("PurchaseConfirmation")]
+    [InlineData("PurchaseReceipt")]
+    [InlineData("SubscriptionRenewed")]
+    [InlineData("SubscriptionReceipt")]
+    [InlineData("SubscriptionChanged")]
+    public void Seed_LicenseTemplates_ShowThePackages(string name)
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == name);
+        var body = template.GetProperty("body").GetString()!;
+        var declared = template.GetProperty("variables").EnumerateArray().Select(x => x.GetString()).ToHashSet();
+
+        // Act
+        var undeclared = System.Text.RegularExpressions.Regex.Matches(body, @"\{\{(\w+)\}\}").Select(match => match.Groups[1].Value).Where(x => !declared.Contains(x)).ToList();
+
+        // Assert
+        Assert.Equal((true, true, 0), (body.Contains("{{packages_list}}", StringComparison.Ordinal), body.Contains("display: {{packages_row_display}};", StringComparison.Ordinal), undeclared.Count));
+    }
+
+    /// <summary>
+    /// La compra o la ampliación de un paquete tiene su correo (pendings/739): es un tipo de plantilla, dice el precio, el
+    /// crédito aplicado y lo pagado, y declara sus variables.
+    /// </summary>
+    [Fact]
+    public void Seed_SubscriptionPackagePurchased_ShowsPriceCreditAppliedAndAmountPaid()
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == "SubscriptionPackagePurchased");
+        var body = template.GetProperty("body").GetString()!;
+        var declared = template.GetProperty("variables").EnumerateArray().Select(x => x.GetString()).ToHashSet();
+
+        // Act
+        var undeclared = System.Text.RegularExpressions.Regex.Matches(body, @"\{\{(\w+)\}\}").Select(match => match.Groups[1].Value).Where(x => !declared.Contains(x)).ToList();
+
+        // Assert
+        Assert.Equal((17, true, 0), ((int)Enum.Parse<TypeTemplate>("SubscriptionPackagePurchased"), new[] { "{{price}}", "{{credit_applied}}", "{{amount_paid}}" }.All(x => body.Contains(x, StringComparison.Ordinal)), undeclared.Count));
+    }
+
+    /// <summary>
+    /// En el comprobante de una compra de paquete no salen la licencia ni su impuesto, que no se cobran (pendings/739).
+    /// </summary>
+    [Fact]
+    public void Seed_SubscriptionReceipt_TheLicenseRowsCanBeHidden()
+    {
+        // Arrange
+        var body = Templates().Single(x => x.GetProperty("name").GetString() == "SubscriptionReceipt").GetProperty("body").GetString()!;
+
+        // Act
+        var hidden = System.Text.RegularExpressions.Regex.Matches(body, @"display: \{\{license_row_display\}\};").Count;
+
+        // Assert
+        Assert.Equal(2, hidden);
+    }
+
     private static List<JsonElement> Templates()
     {
         var resource = typeof(SystemTemplateSeedService).Assembly.GetManifestResourceNames().Single(x => x.EndsWith("system-templates.json", StringComparison.Ordinal));
