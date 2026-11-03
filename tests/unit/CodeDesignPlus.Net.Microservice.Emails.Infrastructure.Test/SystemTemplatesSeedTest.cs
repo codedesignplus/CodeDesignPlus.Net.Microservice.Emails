@@ -93,6 +93,7 @@ public class SystemTemplatesSeedTest
     [InlineData("PurchaseReceipt")]
     [InlineData("SubscriptionRenewed")]
     [InlineData("SubscriptionReceipt")]
+    [InlineData("SubscriptionChanged")]
     public void Seed_LicenseReceipts_DoNotAppendTheCurrencyCodeToTheAmounts(string name)
     {
         // Arrange
@@ -128,6 +129,7 @@ public class SystemTemplatesSeedTest
     [Theory]
     [InlineData("SubscriptionRenewed")]
     [InlineData("SubscriptionReceipt")]
+    [InlineData("SubscriptionChanged")]
     public void Seed_SubscriptionTemplates_SayThePaidPeriod(string name)
     {
         // Arrange
@@ -139,6 +141,59 @@ public class SystemTemplatesSeedTest
 
         // Assert
         Assert.Equal((true, true), (body.Contains("{{period}}", StringComparison.Ordinal), declared));
+    }
+
+    /// <summary>
+    /// El correo de un cambio de licencia es suyo (pendings/738): es un tipo de plantilla, dice el precio, el crédito
+    /// aplicado y lo pagado, y declara todas sus variables.
+    /// </summary>
+    [Fact]
+    public void Seed_SubscriptionChanged_ShowsPriceCreditAppliedAndAmountPaid()
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == "SubscriptionChanged");
+        var body = template.GetProperty("body").GetString()!;
+        var declared = template.GetProperty("variables").EnumerateArray().Select(x => x.GetString()).ToHashSet();
+
+        // Act
+        var undeclared = System.Text.RegularExpressions.Regex.Matches(body, @"\{\{(\w+)\}\}").Select(match => match.Groups[1].Value).Where(name => !declared.Contains(name)).ToList();
+
+        // Assert
+        Assert.Equal((true, true, 0), (Enum.TryParse<TypeTemplate>("SubscriptionChanged", out _), new[] { "{{price}}", "{{credit_applied}}", "{{amount_paid}}" }.All(x => body.Contains(x, StringComparison.Ordinal)), undeclared.Count));
+    }
+
+    /// <summary>
+    /// El correo del cambio lleva el comprobante adjunto: no promete otro correo, como hacía la confirmación de compra que
+    /// usaba antes (pendings/738).
+    /// </summary>
+    [Fact]
+    public void Seed_SubscriptionChanged_DoesNotPromiseASeparateEmail()
+    {
+        // Arrange
+        var body = Templates().Single(x => x.GetProperty("name").GetString() == "SubscriptionChanged").GetProperty("body").GetString()!;
+
+        // Act
+        var promises = body.Contains("correo separado", StringComparison.OrdinalIgnoreCase) || body.Contains("correo aparte", StringComparison.OrdinalIgnoreCase);
+
+        // Assert
+        Assert.False(promises);
+    }
+
+    /// <summary>
+    /// En el PDF del comprobante los importes no se parten en dos líneas («-$» arriba y «290.000,00» abajo): cada celda de
+    /// importe lleva <c>white-space: nowrap</c> (pendings/738).
+    /// </summary>
+    [Fact]
+    public void Seed_SubscriptionReceipt_AmountsDoNotWrap()
+    {
+        // Arrange
+        var body = Templates().Single(x => x.GetProperty("name").GetString() == "SubscriptionReceipt").GetProperty("body").GetString()!;
+
+        // Act
+        var cells = System.Text.RegularExpressions.Regex.Matches(body, @"<td style=""[^""]*text-align: right;[^""]*"">\{\{(credit_applied|amount_paid|price|tax|subtotal)\}\}|<td style=""[^""]*text-align: right;[^""]*"">-\{\{credit_applied\}\}").Select(x => x.Value).ToList();
+
+        // Assert
+        Assert.True(cells.Count == 5 && cells.All(x => x.Contains("white-space: nowrap", StringComparison.Ordinal)));
     }
 
     private static List<JsonElement> Templates()

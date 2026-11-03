@@ -18,6 +18,7 @@ public enum TypeTemplate
     SubscriptionExpiring = 13,
     SubscriptionRenewed = 14,
     SubscriptionReceipt = 15,
+    SubscriptionChanged = 16,
 
     // Notificaciones
     InvitationToOrganization = 20,
