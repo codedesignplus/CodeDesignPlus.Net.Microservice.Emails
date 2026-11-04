@@ -291,6 +291,23 @@ public class SystemTemplatesSeedTest
         Assert.False(mentionsModules);
     }
 
+    /// <summary>
+    /// Un paquete sin IVA no muestra la fila del impuesto en $ 0: ms-licenses manda <c>none</c> y la plantilla, que solo
+    /// reemplaza variables, la oculta con ese valor (pendings/739).
+    /// </summary>
+    [Fact]
+    public void Seed_PackageReceipt_TheTaxRowCanBeHidden()
+    {
+        // Arrange
+        var body = Templates().Single(x => x.GetProperty("name").GetString() == "PackageReceipt").GetProperty("body").GetString()!;
+
+        // Act
+        var row = body[body.LastIndexOf("<tr", body.IndexOf("{{package_tax_label}}", StringComparison.Ordinal), StringComparison.Ordinal)..body.IndexOf("{{package_tax_label}}", StringComparison.Ordinal)];
+
+        // Assert
+        Assert.Contains("display: {{package_tax_row_display}};", row, StringComparison.Ordinal);
+    }
+
     private static List<JsonElement> Templates()
     {
         var resource = typeof(SystemTemplateSeedService).Assembly.GetManifestResourceNames().Single(x => x.EndsWith("system-templates.json", StringComparison.Ordinal));
