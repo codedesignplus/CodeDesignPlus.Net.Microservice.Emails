@@ -180,6 +180,23 @@ public class SystemTemplatesSeedTest
     }
 
     /// <summary>
+    /// La confirmación de compra lleva el comprobante adjunto (UpdateStateOrder de ms-licenses lo adjunta al mismo correo):
+    /// decía «Recibirás el comprobante de pago en un correo separado» y ese correo no existe (pendings/674).
+    /// </summary>
+    [Fact]
+    public void Seed_PurchaseConfirmation_SaysTheReceiptIsAttached()
+    {
+        // Arrange
+        var body = Templates().Single(x => x.GetProperty("name").GetString() == "PurchaseConfirmation").GetProperty("body").GetString()!;
+
+        // Act
+        var says = (body.Contains("correo separado", StringComparison.OrdinalIgnoreCase) || body.Contains("correo aparte", StringComparison.OrdinalIgnoreCase), body.Contains("El comprobante de pago va adjunto a este correo.", StringComparison.Ordinal));
+
+        // Assert
+        Assert.Equal((false, true), says);
+    }
+
+    /// <summary>
     /// En el PDF del comprobante los importes no se parten en dos líneas («-$» arriba y «290.000,00» abajo): cada celda de
     /// importe lleva <c>white-space: nowrap</c> (pendings/738).
     /// </summary>
