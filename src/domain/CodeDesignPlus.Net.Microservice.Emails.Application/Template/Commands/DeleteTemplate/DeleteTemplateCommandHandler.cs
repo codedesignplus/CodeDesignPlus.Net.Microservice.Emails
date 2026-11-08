@@ -12,13 +12,14 @@ public class DeleteTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         var aggregate = await repository.FindAsync<TemplateAggregate>(request.Id, cancellationToken);
 
-        ApplicationGuard.IsNull(aggregate, Errors.TemplateNotFound);
+        // Like GET Template/{id}: another tenant's copy answers like one that does not exist (pendings/674).
+        ApplicationGuard.IsFalse(aggregate?.IsVisibleTo(user.Tenant) == true, Errors.TemplateNotFound);
 
         aggregate.Delete(user.IdUser);
 
         await repository.DeleteAsync<TemplateAggregate>(aggregate.Id, cancellationToken);
 
-        await cacheManager.RemoveAsync(TemplateCacheKey.For(aggregate.Id));
+        await cacheManager.RemoveAsync(TemplateCacheKey.For(aggregate.Tenant, aggregate.Id));
 
         await pubsub.PublishAsync(aggregate.GetAndClearEvents(), cancellationToken);
     }

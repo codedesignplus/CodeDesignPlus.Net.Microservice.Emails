@@ -1,27 +1,36 @@
-using CodeDesignPlus.Net.Core.Abstractions.Models.Pager;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.DataTransferObjects;
 
 namespace CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.FindById;
 
-public class FindByIdQueryHandler(ITemplateRepository repository, IMapper mapper, ICacheManager cacheManager) : IRequestHandler<FindByIdQuery, TemplateDto>
+/// <summary>
+/// Reads a template of the session's tenant or a global one, from the cache when it is there (pendings/674).
+/// </summary>
+/// <remarks>
+/// Another tenant's copy answers like one that does not exist, as <c>GetEmailsById</c> since pendings/680: the copy carries
+/// the tenant's own texts and attachments. The cache is looked up only under the session's tenant and the global owner.
+/// </remarks>
+public class FindByIdQueryHandler(ITemplateRepository repository, IMapper mapper, ICacheManager cacheManager, IUserContext user) : IRequestHandler<FindByIdQuery, TemplateDto>
 {
     public async Task<TemplateDto> Handle(FindByIdQuery request, CancellationToken cancellationToken)
     {
         ApplicationGuard.IsNull(request, Errors.InvalidRequest);
 
-        var key = TemplateCacheKey.For(request.Id);
+        foreach (var key in new[] { TemplateCacheKey.For(user.Tenant, request.Id), TemplateCacheKey.For(null, request.Id) }.Distinct())
+        {
+            if (await cacheManager.ExistsAsync(key))
+            {
+                return await cacheManager.GetAsync<TemplateDto>(key);
+            }
+        }
 
-        var exists = await cacheManager.ExistsAsync(key);
+        var template = await repository.FindAsync<TemplateAggregate>(request.Id, cancellationToken);
 
-        if (exists)
-            return await cacheManager.GetAsync<TemplateDto>(key);
+        ApplicationGuard.IsFalse(template?.IsVisibleTo(user.Tenant) == true, Errors.TemplateNotFound);
 
-        var role = await repository.FindAsync<TemplateAggregate>(request.Id, cancellationToken);
+        var dto = mapper.Map<TemplateDto>(template);
 
-        ApplicationGuard.IsNull(role, Errors.TemplateNotFound);
+        await cacheManager.SetAsync(TemplateCacheKey.For(template!.Tenant, template.Id), dto);
 
-        await cacheManager.SetAsync(key, mapper.Map<TemplateDto>(role));
-
-        return mapper.Map<TemplateDto>(role);
+        return dto;
     }
 }

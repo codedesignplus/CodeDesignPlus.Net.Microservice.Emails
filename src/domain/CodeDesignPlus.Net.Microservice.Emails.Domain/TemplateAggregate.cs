@@ -141,4 +141,12 @@ public class TemplateAggregate(Guid id) : AggregateRootBase(id)
         if (released.Count > 0)
             this.AddEvent(FilesReleasedDomainEvent.Create(Id, released, releasedBy, Tenant ?? Guid.Empty));
     }
+
+    /// <summary>
+    /// Whether the session's tenant can read or change this template: its own copy, or a global template of the system
+    /// (pendings/674). Another tenant's copy answers like one that does not exist.
+    /// </summary>
+    /// <param name="tenant">The tenant of the session; empty when there is none.</param>
+    /// <returns><see langword="true"/> when the template is global or belongs to the tenant.</returns>
+    public bool IsVisibleTo(Guid tenant) => Tenant is null || (tenant != Guid.Empty && Tenant == tenant);
 }

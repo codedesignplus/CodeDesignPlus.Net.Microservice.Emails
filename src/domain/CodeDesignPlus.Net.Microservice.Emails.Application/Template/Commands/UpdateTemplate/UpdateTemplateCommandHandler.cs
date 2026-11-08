@@ -17,7 +17,8 @@ public class UpdateTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         var aggregate = await repository.FindAsync<TemplateAggregate>(request.Id, cancellationToken);
 
-        ApplicationGuard.IsNull(aggregate, Errors.TemplateNotFound);
+        // Like GET Template/{id}: another tenant's copy answers like one that does not exist (pendings/674).
+        ApplicationGuard.IsFalse(aggregate?.IsVisibleTo(user.Tenant) == true, Errors.TemplateNotFound);
 
         var attachments = request.Attachments?.Select(a => new FileAttachment(a.Id, a.Name, a.Target)).ToList() ?? [];
 
@@ -25,7 +26,7 @@ public class UpdateTemplateCommandHandler(ITemplateRepository repository, IUserC
 
         await repository.UpdateAsync(aggregate, cancellationToken);
 
-        await cacheManager.RemoveAsync(TemplateCacheKey.For(aggregate.Id));
+        await cacheManager.RemoveAsync(TemplateCacheKey.For(aggregate.Tenant, aggregate.Id));
 
         await pubsub.PublishAsync(aggregate.GetAndClearEvents(), cancellationToken);
     }
