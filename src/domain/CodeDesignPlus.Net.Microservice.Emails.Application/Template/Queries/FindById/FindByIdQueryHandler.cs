@@ -9,16 +9,18 @@ public class FindByIdQueryHandler(ITemplateRepository repository, IMapper mapper
     {
         ApplicationGuard.IsNull(request, Errors.InvalidRequest);
 
-        var exists = await cacheManager.ExistsAsync(request.Id.ToString());
+        var key = TemplateCacheKey.For(request.Id);
+
+        var exists = await cacheManager.ExistsAsync(key);
 
         if (exists)
-            return await cacheManager.GetAsync<TemplateDto>(request.Id.ToString());
+            return await cacheManager.GetAsync<TemplateDto>(key);
 
         var role = await repository.FindAsync<TemplateAggregate>(request.Id, cancellationToken);
 
         ApplicationGuard.IsNull(role, Errors.TemplateNotFound);
 
-        await cacheManager.SetAsync(request.Id.ToString(), mapper.Map<TemplateDto>(role));
+        await cacheManager.SetAsync(key, mapper.Map<TemplateDto>(role));
 
         return mapper.Map<TemplateDto>(role);
     }
