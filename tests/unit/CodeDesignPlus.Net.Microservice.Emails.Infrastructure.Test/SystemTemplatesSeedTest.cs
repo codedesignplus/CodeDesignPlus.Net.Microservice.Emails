@@ -325,6 +325,49 @@ public class SystemTemplatesSeedTest
         Assert.Contains("display: {{package_tax_row_display}};", row, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// El correo de una compra dice cuándo lleva adjunta la factura electrónica: ms-licenses manda el texto en
+    /// <c>electronic_invoice_note</c>, vacío si no la lleva (pendings/661, paso 4).
+    /// </summary>
+    [Theory]
+    [InlineData("PurchaseConfirmation")]
+    [InlineData("SubscriptionRenewed")]
+    [InlineData("SubscriptionChanged")]
+    [InlineData("SubscriptionPackagePurchased")]
+    [InlineData("SubscriptionInvoiceIssued")]
+    public void Seed_PurchaseEmails_SayWhenTheInvoiceGoesAttached(string name)
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == name);
+
+        // Act
+        var body = template.GetProperty("body").GetString()!;
+        var declared = template.GetProperty("variables").EnumerateArray().Select(x => x.GetString()).ToList();
+
+        // Assert
+        Assert.True(body.Contains("{{electronic_invoice_note}}", StringComparison.Ordinal) && declared.Contains("electronic_invoice_note"));
+    }
+
+    /// <summary>
+    /// La factura que llega después del comprobante sale en su propio correo, con su número; cada variable que usa está
+    /// declarada (pendings/661, paso 4).
+    /// </summary>
+    [Fact]
+    public void Seed_SubscriptionInvoiceIssued_PlaceholdersAreDeclared()
+    {
+        // Arrange
+        var template = Templates().Single(x => x.GetProperty("name").GetString() == "SubscriptionInvoiceIssued");
+        var declared = template.GetProperty("variables").EnumerateArray().Select(x => x.GetString()).ToHashSet();
+
+        // Act
+        var used = System.Text.RegularExpressions.Regex.Matches(template.GetProperty("subject").GetString() + template.GetProperty("body").GetString(), @"\{\{(\w+)\}\}")
+            .Select(match => match.Groups[1].Value)
+            .ToHashSet();
+
+        // Assert
+        Assert.True(used.Contains("invoice_number") && used.SetEquals(declared!));
+    }
+
     private static List<JsonElement> Templates()
     {
         var resource = typeof(SystemTemplateSeedService).Assembly.GetManifestResourceNames().Single(x => x.EndsWith("system-templates.json", StringComparison.Ordinal));
