@@ -1,6 +1,8 @@
 using CodeDesignPlus.Net.Microservice.Emails.Application.Emails.Commands.SendEmail;
 using CodeDesignPlus.Net.Microservice.Emails.Domain.Models;
 using CodeDesignPlus.Net.Microservice.Emails.Rest.DataTransferObjects;
+using CodeDesignPlus.Net.Core.Abstractions.Models.Pager;
+using CodeDesignPlus.Net.Microservice.Emails.Application.Emails.DataTransferObjects;
 
 namespace CodeDesignPlus.Net.Microservice.Emails.Rest.Controllers;
 
@@ -19,6 +21,7 @@ public class EmailController(IMediator mediator) : ControllerBase
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of Emails.</returns>
     [HttpGet]
+    [ProducesResponseType<Pagination<EmailsDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetEmails([FromQuery] C.Criteria criteria, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetAllEmailsQuery(criteria), cancellationToken);
@@ -33,6 +36,7 @@ public class EmailController(IMediator mediator) : ControllerBase
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The Email.</returns>
     [HttpGet("{id}")]
+    [ProducesResponseType<EmailsDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetEmailById(Guid id, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetEmailsByIdQuery(id), cancellationToken);

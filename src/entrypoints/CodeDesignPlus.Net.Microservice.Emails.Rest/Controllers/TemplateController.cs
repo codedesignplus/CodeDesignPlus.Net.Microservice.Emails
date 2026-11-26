@@ -5,6 +5,8 @@ using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Commands.Updat
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.FindById;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.GetAll;
 using CodeDesignPlus.Net.Microservice.Emails.Application.Template.Queries.GetSystemTemplates;
+using CodeDesignPlus.Net.Core.Abstractions.Models.Pager;
+using CodeDesignPlus.Net.Microservice.Emails.Application.Template.DataTransferObjects;
 
 namespace CodeDesignPlus.Net.Microservice.Emails.Rest.Controllers;
 
@@ -24,6 +26,7 @@ public class TemplateController(IMediator mediator, IMapper mapper) : Controller
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of Templates.</returns>
     [HttpGet]
+    [ProducesResponseType<Pagination<TemplateDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetTemplates([FromQuery] C.Criteria criteria, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetAllQuery(criteria), cancellationToken);
@@ -37,6 +40,7 @@ public class TemplateController(IMediator mediator, IMapper mapper) : Controller
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of system templates.</returns>
     [HttpGet("system")]
+    [ProducesResponseType<List<TemplateDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetSystemTemplates(CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetSystemTemplatesQuery(), cancellationToken);
@@ -51,6 +55,7 @@ public class TemplateController(IMediator mediator, IMapper mapper) : Controller
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The Template.</returns>
     [HttpGet("{id}")]
+    [ProducesResponseType<TemplateDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetTemplateById(Guid id, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new FindByIdQuery(id), cancellationToken);
